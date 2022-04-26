@@ -10,6 +10,9 @@ def init_app(app: Flask):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"]= False
 
     db.init_app(app)
+
+    from app.models.user_model import User
+
     app.db= db
 
     import app.models

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-
 from app.configs.database import db
 from sqlalchemy import Column, Integer, String
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,18 +6,24 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 @dataclass
 class User (db.Model):
+
     id: int
-    user_name: str
+    name: str
+    email: str
+    creation_date: str
 
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key = True)
-    user_name = Column(String, nullable = False, unique = True)
-    password = Column(String, nullable = False)
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False )
+    password_hash = Column(String, nullable=False)
+    creation_date = Column(String, nullable=False)
+    
 
     @property
     def password(self):
-        raise AttributeError('Não é possivel acessar o atributo password')
+        raise AttributeError("Inaccessible password")
 
     @password.setter
     def password(self, password_to_hash):
