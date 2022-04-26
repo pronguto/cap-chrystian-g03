@@ -17,18 +17,18 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 ####  Corpo da requisição:
 
     {
-    #####  "name": "Philip",
-    #####  "email": "example@gmail.com",
-    #####  "password": "1234"
+        "name": "Philip",
+        "email": "example@gmail.com",
+        "password": "1234"
     }
 
 ####  Corpo da resposta:
 
     { 
-    #####  "id": 1,
-    #####  "name": "Philip",
-    #####  "email": "example@gmail.com",
-    #####  "creation_date": "2022-04-26 16:58:29.324159"
+        "id": 1,
+        "name": "Philip",
+        "email": "example@gmail.com",
+        "creation_date": "2022-04-26 16:58:29.324159"
     }
 
 
@@ -44,14 +44,14 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 ####  Corpo da requisição:
 
     {
-    #####  "email": "example@gmail.com",
-    #####  "password": "1234"
+        "email": "example@gmail.com",
+        "password": "1234"
     }
 
 ####  Corpo da resposta:
 
     {
-    ##### "token": "370e63d575bfsdfsfesasdfa2346c1bfb973b0b61047dae3"
+        "token": "370e63d575bfsdfsfesasdfa2346c1bfb973b0b61047dae3"
     }
 
 
@@ -75,10 +75,10 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
     {
 
-    ##### "id": 1,
-    ##### "name": "Philip"
-    ##### "email": "example@gmail.com",
-    ##### "creation_date": "2022-04-26 16:58:29.324159",
+        "id": 1,
+        "name": "Philip"
+        "email": "example@gmail.com",
+        "creation_date": "2022-04-26 16:58:29.324159",
 
     }
 
@@ -99,19 +99,19 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 #####  É possível alterar o nome e a senha.
 
     {
-    ##### "name": "Philip02",
-    ##### "email": "example@gmail.com",
-    ##### "password": "1234567890"
+        "name": "Philip02",
+        "email": "example@gmail.com",
+        "password": "1234567890"
     }
 
 
 ####  Corpo da resposta:
 
     {
-    #####	"id": 1,
-    #####	"name": "Philip02",
-    #####	"email": "example@gmail.com",
-    #####	"creation_date": "2022-04-26 17:16:32.470006"
+    	"id": 1,
+    	"name": "Philip02",
+    	"email": "example@gmail.com",
+    	"creation_date": "2022-04-26 17:16:32.470006"
     }
 
 
@@ -131,5 +131,5 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 
     {
-    ##### "message": "User Philip has been deleted."
+        "message": "User Philip has been deleted."
     }
