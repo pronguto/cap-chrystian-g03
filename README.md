@@ -6,4 +6,130 @@ OIKOS foi idealizado para fazer esse cálculo e dependendo da prolixidade do usu
 
 Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade de garantir que a informação só possa ser por ele manipulada.
 
-## Cadastro de usuário
+# Cadastro de usuário
+
+
+
+## POST /api/users/signup - Rota responsável pelo CADASTRO do usuário.
+
+####  Não necessita de AUTORIZAÇÃO por token 
+
+####  Corpo da requisição:
+
+    {
+        "name": "Philip",
+        "email": "example@gmail.com",
+        "password": "1234"
+    }
+
+####  Corpo da resposta:
+
+    { 
+        "id": 1,
+        "name": "Philip",
+        "email": "example@gmail.com",
+        "creation_date": "2022-04-26 16:58:29.324159"
+    }
+
+
+
+---------------------------------------------------------------
+
+
+
+## POST /api/users/signin - Rota responsável pelo LOGIN do usuário.
+
+####  Não necessita de AUTORIZAÇÃO por token -
+
+####  Corpo da requisição:
+
+    {
+        "email": "example@gmail.com",
+        "password": "1234"
+    }
+
+####  Corpo da resposta:
+
+    {
+        "token": "370e63d575bfsdfsfesasdfa2346c1bfb973b0b61047dae3"
+    }
+
+
+
+---------------------------------------------------------------
+
+
+
+## GET /api/users - Rota responsável pela BUSCA DO USUÁRIO.
+
+
+####  Rota necessita de AUTORIZAÇÃO por token -
+ 
+
+####  Requisição sem corpo:
+
+#####  Obs: para encontrar o usuário é preciso fazer o login e utilizar o token auth.
+
+
+####  Corpo da resposta:
+
+    {
+
+        "id": 1,
+        "name": "Philip"
+        "email": "example@gmail.com",
+        "creation_date": "2022-04-26 16:58:29.324159",
+
+    }
+
+
+
+---------------------------------------------------------------
+
+
+
+## PUT /api/users - rota responsável pela ATUALIZAÇÃO de todas as informações do usuário.
+
+
+####  Rota necessita de AUTORIZAÇÃO por token -
+ 
+
+####  Corpo da requisição:
+
+#####  É possível alterar o nome e a senha.
+
+    {
+        "name": "Philip02",
+        "email": "example@gmail.com",
+        "password": "1234567890"
+    }
+
+
+####  Corpo da resposta:
+
+    {
+    	"id": 1,
+    	"name": "Philip02",
+    	"email": "example@gmail.com",
+    	"creation_date": "2022-04-26 17:16:32.470006"
+    }
+
+
+
+---------------------------------------------------------------
+
+
+
+## DELETE /api/users - Rota responsável por DELETAR O USUÁRIO.
+
+
+####  Requisição sem corpo:
+
+#####   -     Obs: para deletar o usuário é preciso fazer o login e utilizar o token auth.
+
+####  Corpo da resposta:
+
+
+    {
+        "message": "User Philip has been deleted."
+    }
