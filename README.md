@@ -12,9 +12,9 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 ## POST /api/users/signup - Rota responsável pelo CADASTRO do usuário.
 
-#### Não necessita de AUTORIZAÇÃO por token 
+####  Não necessita de AUTORIZAÇÃO por token 
 
-#### Corpo da requisição:
+####  Corpo da requisição:
 
     {
     #####  "name": "Philip",
@@ -22,7 +22,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
     #####  "password": "1234"
     }
 
-#### Corpo da resposta:
+####  Corpo da resposta:
 
     { 
     #####  "id": 1,
@@ -39,16 +39,16 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 ## POST /api/users/signin - Rota responsável pelo LOGIN do usuário.
 
-#### Não necessita de AUTORIZAÇÃO por token -
+####  Não necessita de AUTORIZAÇÃO por token -
 
-#### Corpo da requisição:
+####  Corpo da requisição:
 
     {
     #####  "email": "example@gmail.com",
     #####  "password": "1234"
     }
 
-#### Corpo da resposta:
+####  Corpo da resposta:
 
     {
     ##### "token": "370e63d575bfsdfsfesasdfa2346c1bfb973b0b61047dae3"
@@ -63,15 +63,15 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 ## GET /api/users - Rota responsável pela BUSCA DO USUÁRIO.
 
 
-#### Rota necessita de AUTORIZAÇÃO por token -
+####  Rota necessita de AUTORIZAÇÃO por token -
  
 
-#### Requisição sem corpo:
+####  Requisição sem corpo:
 
-##### Obs: para encontrar o usuário é preciso fazer o login e utilizar o token auth.
+#####  Obs: para encontrar o usuário é preciso fazer o login e utilizar o token auth.
 
 
-#### Corpo da resposta:
+####  Corpo da resposta:
 
     {
 
@@ -91,12 +91,12 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 ## PUT /api/users - rota responsável pela ATUALIZAÇÃO de todas as informações do usuário.
 
 
-#### Rota necessita de AUTORIZAÇÃO por token -
+####  Rota necessita de AUTORIZAÇÃO por token -
  
 
-#### Corpo da requisição:
+####  Corpo da requisição:
 
-##### É possível alterar o nome e a senha.
+#####  É possível alterar o nome e a senha.
 
     {
     ##### "name": "Philip02",
@@ -105,7 +105,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
     }
 
 
-#### Corpo da resposta:
+####  Corpo da resposta:
 
     {
     #####	"id": 1,
@@ -123,11 +123,11 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 ## DELETE /api/users - Rota responsável por DELETAR O USUÁRIO.
 
 
-#### Requisição sem corpo:
+####  Requisição sem corpo:
 
 #####   -     Obs: para deletar o usuário é preciso fazer o login e utilizar o token auth.
 
-#### Corpo da resposta:
+####  Corpo da resposta:
 
 
     {
