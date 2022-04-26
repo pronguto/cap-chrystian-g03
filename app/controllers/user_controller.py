@@ -10,12 +10,11 @@ from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identi
 
 def create_user():
     data = request.get_json()
-
+    print(data)
     try:
-        data["creation_date"] = dt.now()
 
         user: User = User(**data)
-        
+ 
         db.session.add(user)
         db.session.commit()
 
