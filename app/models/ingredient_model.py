@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from app.configs.database import db
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
 from app.models.recipe_ingredients_model import RecipeIngredient
 
@@ -18,4 +19,6 @@ class Ingredient (db.Model):
     ingredient_name = Column(String, nullable = False, unique = True)
     measurement_unit = Column(String(10), nullable = False)
     
-    recipe = db.relationship("Recipe", secondary = RecipeIngredient, backref = "ingredient")
+    # recipe = db.relationship("Recipe", secondary = RecipeIngredient, backref = "ingredient")
+
+    purchases = relationship("Purchase", back_populates = "ingredient")
