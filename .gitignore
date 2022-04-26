@@ -2,4 +2,9 @@
 .env
 /venv
 .vscode
-
+app/models/__pycache__/recipe_model.cpython-39.pyc
+app/models/__pycache__/purchase_model.cpython-39.pyc
+app/models/__pycache__/production_recipes_model.cpython-39.pyc
+app/models/__pycache__/ingredients_purchase_model.cpython-39.pyc
+app/models/__pycache__/ingredient_model.cpython-39.pyc
+app/models/__pycache__/__init__.cpython-39.pyc

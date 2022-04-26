@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from app.configs.database import db
-from sqlalchemy import Column, Float, ForeignKey, Integer, Numeric, String
+from sqlalchemy import Column, Float, ForeignKey, Integer
 
 
 @dataclass
