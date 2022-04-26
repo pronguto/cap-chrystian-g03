@@ -3,8 +3,6 @@ from dataclasses import dataclass
 from app.configs.database import db
 from sqlalchemy import Column, Integer, String
 
-from app.models.production_recipes_model import ProductionRecipe
-
 
 @dataclass
 class Recipe (db.Model):
@@ -16,4 +14,4 @@ class Recipe (db.Model):
     recipe_id = Column(Integer, primary_key = True)
     recipe_name = Column(String, nullable = False, unique = True)
     
-    production = db.relationship("Production", secondary = ProductionRecipe, backref = "recipe")
+    production = db.relationship("Production", secondary = "production_recipes", backref = "recipe")
