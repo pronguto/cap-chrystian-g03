@@ -67,8 +67,8 @@ def ingredient_updater():
 def ingredient_deleter(name: str):
     session: Session= db.session()
     ingredient_delet= Ingredient.query.filter_by(ingredient_name= name.lower()).first()
-    session.delete(ingredient_delet)
     if not ingredient_delet:
         return {"Error": "Ingredient not found"}, HTTPStatus.NOT_FOUND
+    session.delete(ingredient_delet)
     session.commit()
     return "", HTTPStatus.NO_CONTENT

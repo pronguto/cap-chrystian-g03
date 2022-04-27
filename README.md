@@ -132,3 +132,192 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
         "message": "User Philip has been deleted."
     }
     
+
+---------------------------------------------------------------
+---------------------------------------------------------------
+
+# Ingredientes
+
+## CADASTRO DE INGREDIENTES
+
+### POST /api/ingredients - Rota responsável pelo CADASTRO de ingrediente.
+
+*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+
+#### Corpo da requisição:
+
+```json 
+
+    {
+        "ingredient_name":"Fermento",
+        "measurement_unit":"G"
+    }
+
+```
+
+####  Corpo da resposta - STATUS CODE 201 - CREATED:
+
+
+```json 
+
+    {
+        "ingredient_id": 1,
+        "ingredient_name": "fermento",
+        "measurement_unit": "g"
+    }
+
+```
+
+1- A unidade de medida passada deve ser apenas a sigla
+
+### Possíveis erros
+
+Caso o nome de uma das chaves esteja incorreta.
+
+POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
+
+```json 
+    {
+        "expected keys": [
+            "measurement_unit",
+            "ingredient_name"
+        ],
+        "recived keys": [
+            "measurement_unit",
+            "ingredients_name"
+        ]
+    }
+
+```
+
+Ingrediente já cadastrado:  
+
+POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
+
+```json 
+
+    {
+        "msg": "ingredient already exists"
+    }
+
+```
+---------------------------------------------------------------
+
+## BUSCA DE INGREDIENTES
+
+### POST /api/ingredients - Rota responsável pela BUSCA de ingrediente.
+
+*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+
+#### Não possui corpo de requisição
+
+####  Corpo da resposta - STATUS CODE 200 - OK:
+
+```json 
+
+    {
+        "ingredient_id": 1,
+        "ingredient_name": "fermento",
+        "measurement_unit": "g"
+    }
+
+```
+
+---------------------------------------------------------------
+
+## ATUALIZAÇÃO DE INGREDIENTES
+
+### POST /api/ingredients - Rota responsável pela ATUALIZAÇÃO do ingrediente.
+
+*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+
+#### Corpo da requisição:
+
+```json 
+
+    {
+        "ingredient_name":"Fermento",
+        "measurement_unit":"kg"
+    }
+
+```
+####  Corpo da resposta:
+
+```json 
+
+    {
+        "ingredient_id": 1,
+        "ingredient_name": "fermento",
+        "measurement_unit": "kg"
+    }
+
+```
+### Possíveis erros
+
+Caso o nome de uma das chaves esteja incorreta.
+
+POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
+
+```json 
+    {
+        "expected keys": [
+            "measurement_unit",
+            "ingredient_name"
+        ],
+        "recived keys": [
+            "measurement_unit",
+            "ingredients_name"
+        ]
+    }
+
+```
+
+Ingrediente não encontrado:  
+
+POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
+
+```json 
+
+    {
+        "msg": "error, ingredient not found"
+    }
+
+```
+
+Caso não exista o ingrediente.
+
+POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
+
+```json 
+
+    {
+        "Error": "Ingredient not found"
+    }
+
+```
+
+---------------------------------------------------------------
+
+## DELEÇÃO DE INGREDIENTES
+
+### POST /api/ingredients/<name> - Rota responsável pela DELEÇÃO de ingrediente.
+
+*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+
+#### Não possui corpo de requisição
+
+####  Não possui corpo de resposta
+
+### Possíveis erros
+
+Caso não exista o ingrediente.
+
+POST /api/ingredients/<name> - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
+
+```json 
+
+    {
+        "Error": "Ingredient not found"
+    }
+
+```
