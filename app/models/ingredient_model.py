@@ -13,6 +13,6 @@ class Ingredient (db.Model):
 
     ingredient_id = Column(Integer, primary_key = True)
     ingredient_name = Column(String, nullable = False, unique = True)
-    measurement_unit = Column(String(10), nullable = False)
+    measurement_unit = Column(String(10), nullable = True)
     
     recipe = db.relationship("Recipe", secondary = "recipe_ingredients", backref = "ingredient")
