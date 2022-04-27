@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from app.configs.database import db
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.sql import func
 
 
 @dataclass
@@ -10,7 +11,6 @@ class User (db.Model):
     id: int
     name: str
     email: str
-    creation_date: str
 
     __tablename__ = "users"
 
@@ -18,8 +18,7 @@ class User (db.Model):
     name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False )
     password_hash = Column(String, nullable=False)
-    creation_date = Column(String, nullable=False)
-    
+
 
     @property
     def password(self):
