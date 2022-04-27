@@ -29,7 +29,6 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
         "id": 1,
         "name": "Philip",
         "email": "example@gmail.com",
-        "creation_date": "2022-04-26 16:58:29.324159"
     }
 
 
@@ -78,8 +77,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
         "id": 1,
         "name": "Philip"
-        "email": "example@gmail.com",
-        "creation_date": "2022-04-26 16:58:29.324159",
+        "email": "example@gmail.com"
 
     }
 
@@ -111,8 +109,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
     {
     	"id": 1,
     	"name": "Philip02",
-    	"email": "example@gmail.com",
-    	"creation_date": "2022-04-26 17:16:32.470006"
+    	"email": "example@gmail.com"
     }
 
 
@@ -130,7 +127,8 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 ####  Corpo da resposta:
 
-
+    
     {
         "message": "User Philip has been deleted."
     }
+    
