@@ -4,7 +4,8 @@ from .purchase_routes import bp_purchase
 from .recipe_routes import bp_recipe
 from .ingredient_routes import bp_ingredient
 from .production_routes import bp_production
-from .stock_routes import bp_stock
+# from .stock_routes import bp_stock
+from .ingredients_purchase_routes import bp_ipurchase
 
 bp_api = Blueprint("api", __name__, url_prefix="/api")
 
@@ -14,5 +15,6 @@ def init_app(app: Flask):
     bp_api.register_blueprint(bp_ingredient)
     bp_api.register_blueprint(bp_recipe)
     bp_api.register_blueprint(bp_production)
-    bp_api.register_blueprint(bp_stock)
+    # bp_api.register_blueprint(bp_stock)
+    bp_api.register_blueprint(bp_ipurchase)
     app.register_blueprint(bp_api)
