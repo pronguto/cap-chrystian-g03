@@ -17,14 +17,13 @@ def ingredients_purchase_creator(id):
     payload = []
     
     x = data.pop("ingredient_name")
-    ingredient = Ingredient.query.filter_by(ingredient_name = x).first()
-    # if Ingredient.query.filter_by(ingredient_name = x).first():
-    #     ingredient = Ingredient.query.filter_by(ingredient_name = x).first()
-    # else:
-    #     ingrediente = Ingredient(**{"ingredient_name": x})
-    #     db.session.add(ingrediente)
-    #     db.session.commit()
-    #     ingredient = ingrediente
+    if Ingredient.query.filter_by(ingredient_name = x).first():
+        ingredient = Ingredient.query.filter_by(ingredient_name = x).first()
+    else:
+        ingrediente = Ingredient(**{"ingredient_name": x})
+        db.session.add(ingrediente)
+        db.session.commit()
+        ingredient = ingrediente
     
     ingredient_id = asdict(ingredient)["ingredient_id"]
     purchase = Purchase.query.filter_by(purchase_id = id).first()
