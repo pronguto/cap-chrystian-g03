@@ -51,7 +51,7 @@ def loger_user():
         if not allowed:
             return {"Error": "Invalid password"}, HTTPStatus.NOT_FOUND
 
-        output_token = create_access_token(user_by_email, expires_delta=timedelta(minutes=1))
+        output_token = create_access_token(user_by_email, expires_delta=timedelta(minutes=15))
 
         return {"access_token": output_token}
 

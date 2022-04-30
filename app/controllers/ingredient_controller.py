@@ -1,3 +1,4 @@
+from dataclasses import asdict
 from http import HTTPStatus
 
 from app.configs.database import db
@@ -7,7 +8,7 @@ from flask import jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy.orm import Query, Session
 from app.services import ingredient_service
-
+from app.models.ingredients_purchase_model import IngredientsPurchase
 
 @jwt_required()
 def ingredient_creator():
@@ -33,11 +34,30 @@ def ingredient_creator():
 def ingredient_loader():
     session: Session= db.session()
 
-    base_query: Query= session.query(Ingredient).all()
+    base_query_ingredients: Query= session.query(Ingredient).all()
+    sezalized_ingredients= []
+    for ingredient in base_query_ingredients:
+        base_query_ingredients_purchases: Query= session.query(
+            IngredientsPurchase.purchase_id, 
+            IngredientsPurchase.purchase_quantity, 
+            IngredientsPurchase.purchase_price 
+        ).filter_by(ingredient_id= ingredient.ingredient_id).all()
+        purchase_ingredient_id=[]
+        for purchase_ingredient in base_query_ingredients_purchases:
+            purchase_ingredient_id.append(purchase_ingredient)
+        to_seralize_ingredient=[]
+        for purchase_id in purchase_ingredient_id:
+            purchases_ingredient= {
+            "purchase_id": purchase_id[0],
+            "purchase_quantity": purchase_id[1],
+            "purchase_price": purchase_id[2]
+            }
+            to_seralize_ingredient.append(purchases_ingredient)
+        seralize_ingredient= {"purchases": to_seralize_ingredient}
+        seralize_ingredient.update(asdict(ingredient))
+        sezalized_ingredients.append(seralize_ingredient)
 
-    ingredients= base_query
-
-    return jsonify(ingredients), HTTPStatus.OK
+    return jsonify(sezalized_ingredients), HTTPStatus.OK
 
 # def ingredient_by_name():
 #     return {"msg": "ingredient by name"}
