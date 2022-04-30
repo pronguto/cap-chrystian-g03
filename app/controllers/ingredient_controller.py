@@ -4,11 +4,12 @@ from http import HTTPStatus
 from app.configs.database import db
 from app.models.exceptions.ingredient_exception import KeysError
 from app.models.ingredient_model import Ingredient
+from app.models.ingredients_purchase_model import IngredientsPurchase
+from app.services import ingredient_service
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy.orm import Query, Session
-from app.services import ingredient_service
-from app.models.ingredients_purchase_model import IngredientsPurchase
+
 
 @jwt_required()
 def ingredient_creator():
@@ -30,7 +31,7 @@ def ingredient_creator():
         return {"msg": "ingredient already exists"}, HTTPStatus.BAD_REQUEST
     return jsonify(ingredient), HTTPStatus.CREATED
 
-@jwt_required()
+# @jwt_required()
 def ingredient_loader():
     session: Session= db.session()
 
@@ -59,8 +60,31 @@ def ingredient_loader():
 
     return jsonify(sezalized_ingredients), HTTPStatus.OK
 
-# def ingredient_by_name():
-#     return {"msg": "ingredient by name"}
+# @jwt_required()
+def ingredient_by_name(name: str):
+    session: Session= db.session()
+    base_query_ingredient: Query= session.query(Ingredient).filter_by(ingredient_name= name.lower()).first()
+    if not base_query_ingredient:
+        return {"Error": "Ingredient not found"}, HTTPStatus.NOT_FOUND
+    base_query_ingredient_purchase: Query= session.query(
+        IngredientsPurchase.purchase_id, 
+        IngredientsPurchase.purchase_quantity, 
+        IngredientsPurchase.purchase_price 
+    ).filter_by(ingredient_id= base_query_ingredient.ingredient_id).all()
+    ingredient_purchase= []
+    to_seralize_ingredient= []
+    for purchase_ingredient in base_query_ingredient_purchase:
+        ingredient_purchase.append(purchase_ingredient)
+    for purchase_id in ingredient_purchase:
+        purchases_ingredient= {
+            "purchase_id": purchase_id[0],
+            "purchase_quantity": purchase_id[1],
+            "purchase_price": purchase_id[2] 
+        }
+        to_seralize_ingredient.append(purchases_ingredient)
+    seralize_ingredient= {"purchases": to_seralize_ingredient}
+    seralize_ingredient.update(asdict(base_query_ingredient))
+    return jsonify(seralize_ingredient), HTTPStatus.OK
 
 @jwt_required()
 def ingredient_updater():
