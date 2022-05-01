@@ -46,6 +46,7 @@ def purchase_loader():
     query: Query = (
         session.query(
             Ingredient.ingredient_name,
+            Purchase.purchase_id,
             Ingredient.ingredient_id,
             Ingredient.measurement_unit,
             IngredientsPurchase.purchase_quantity,
@@ -62,43 +63,43 @@ def purchase_loader():
     purchases = [purchase._asdict() for purchase in query]
 
     return jsonify(purchases)
-    return jsonify(purchases)
 
 
 # @jwt_required()
 def purchase_intervaler():
     session: Session = db.session
-    data = request.args
-    initial_date = datetime.strptime(data["initial_date"], "%d-%m-%Y").date()
-    final_date = datetime.strptime(data["final_date"], "%d-%m-%Y").date()
-    query: Query = (
-        session.query(
-            Purchase.purchase_id,
-            Purchase.purchase_date,
-            Ingredient.ingredient_id,
-            Ingredient.ingredient_name,
-            IngredientsPurchase.purchase_quantity,
-            IngredientsPurchase.purchase_price,
-        )
-        .select_from(Purchase)
-        .join(IngredientsPurchase)
-        .join(Ingredient)
-        # from sqlalchemy import and_
-        .filter(
-            and_(
-                Purchase.purchase_date > initial_date,
-                Purchase.purchase_date < final_date,
+
+    try:
+        data = request.args
+        initial_date = datetime.strptime(data["initial_date"], "%d-%m-%Y").date()
+        final_date = datetime.strptime(data["final_date"], "%d-%m-%Y").date()
+        query: Query = (
+            session.query(
+                Purchase.purchase_id,
+                Purchase.purchase_date,
+                Ingredient.ingredient_id,
+                Ingredient.ingredient_name,
+                IngredientsPurchase.purchase_quantity,
+                IngredientsPurchase.purchase_price,
             )
+            .select_from(Purchase)
+            .join(IngredientsPurchase)
+            .join(Ingredient)
+            # from sqlalchemy import and_
+            .filter(
+                and_(
+                    Purchase.purchase_date > initial_date,
+                    Purchase.purchase_date < final_date,
+                )
+            )
+            .order_by(Purchase.purchase_id)
+            .all()
         )
-        .order_by(Purchase.purchase_id)
-        .all()
-    )
+    except ValueError:
+        return {"detail": "start date or end date is not valid"}, 404
+
     purchases = [purchase._asdict() for purchase in query]
     return jsonify(purchases)
-
-
-# def purchase_by_date():
-#     return {"msg": "purchase by date"}
 
 
 def purchase_updater(id):
@@ -106,43 +107,32 @@ def purchase_updater(id):
 
     session: Session = db.session
 
-    """
-    select 
-        "ingredient_name" ingredients,
-        "measurement_unit" ingredients,	
-        "purchase_quantity" ingredients_purchase,
-        "purchase_price" ingredients_purchase,
-    from ingredients ing
-    join ingredients_purchase ip 
-	    on ing.ingredient_id = ip.ingredient_id 
-    join purchases purch
-	    on purch.purchase_id = ip.purchase_id 
-
-    """
-
-    query: Query = (
-        session.query(
-            Ingredient.ingredient_name,
-            Ingredient.measurement_unit,
-            IngredientsPurchase.purchase_quantity,
-            IngredientsPurchase.purchase_price,
-        )
-        .select_from(Purchase)
-        .join(IngredientsPurchase)
-        .join(Ingredient)
-        .filter(Purchase.purchase_id == id)
-        .all()
+    query: IngredientsPurchase = (
+        session.query(IngredientsPurchase).filter_by(id=id).first()
     )
-
-    purchases = [purchase._asdict() for purchase in query]
+    if not query:
+        return {"detail": "id not found"}, 404
 
     for key, value in data.items():
-        setattr(purchases, key, value)
-    print(f"****{purchases}")
+        setattr(query, key, value)
 
-    return {"msg": "purchase updater"}
+    session.add(query)
+    session.commit()
+
+    return jsonify(query)
 
 
-@jwt_required()
-def purchase_deleter():
-    return {"msg": "purchase deleter"}
+# @jwt_required()
+def purchase_deleter(id):
+    session: Session = db.session
+
+    purchase: IngredientsPurchase = (
+        session.query(IngredientsPurchase).filter_by(id=id).first()
+    )
+    if not purchase:
+        return {"detail": "id not found"}, 404
+
+    session.delete(purchase)
+    session.commit()
+
+    return "", 204
