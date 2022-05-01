@@ -4,8 +4,8 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 
-# def production_creator():
-    # return {"msg": "production creator"}
+def production_creator():
+    return {"msg": "production creator"}
 
 @jwt_required()
 def production_loader():

@@ -1,6 +1,6 @@
 # from flask import Blueprint
-# from app.controllers import stock_controller
+# from app.controllers import purchase_controller
 
-# bp_stock = Blueprint("ingredients_purchase", __name__, url_prefix="/stock")
+# bp_stock = Blueprint("purchases", __name__, url_prefix="/purchases")
 
-# bp_stock.get("")(stock_controller.stock)
+# bp_stock.get("/<initial_date>&<final_date>")(purchase_controller.stock)

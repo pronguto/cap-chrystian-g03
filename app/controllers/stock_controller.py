@@ -10,16 +10,18 @@ from app.models.ingredients_purchase_model import IngredientsPurchase
 from app.models.ingredient_model import Ingredient
 from sqlalchemy.orm import Query, Session
 from app.configs.database import db
+from app import create_app
 
 # @jwt_required()
-def stock():
+def stock(initial_date: str,final_date: str):
     session: Session = db.session
+
     query: Query = (
         session.query(Purchase.purchase_id,Purchase.purchase_date, Ingredient.ingredient_id,Ingredient.ingredient_name,IngredientsPurchase.purchase_quantity,IngredientsPurchase.purchase_price)
         .select_from(Purchase)
         .join(IngredientsPurchase)
         .join(Ingredient)
-        # .filter(Purchase.purchase_id == purchase_id)
+        .filter(Purchase.purchase_date > initial_date  and Purchase.purchase_date < final_date)
         .order_by(Purchase.purchase_id)
         .all()
     )
