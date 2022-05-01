@@ -9,7 +9,7 @@ class Recipe (db.Model):
     recipe_id: int
     recipe_name: str
 
-    __tablename__ = "recipes"
+    _tablename_ = "recipes"
 
     recipe_id = Column(Integer, primary_key = True)
     recipe_name = Column(String, nullable = False, unique = True)

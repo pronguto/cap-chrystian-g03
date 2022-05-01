@@ -16,4 +16,4 @@ class RecipeIngredient (db.Model):
     recipe_id = Column(Integer, ForeignKey("recipes.recipe_id"), nullable=False)
     ingredient_id = Column(Integer, ForeignKey("ingredients.ingredient_id"), nullable=False)
     quantity = Column(Float(3), nullable = False)
-    
+
