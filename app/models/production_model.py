@@ -3,6 +3,8 @@ from datetime import datetime
 
 from app.configs.database import db
 from sqlalchemy import Column, Date, Integer
+from sqlalchemy.orm import relationship
+
 
 
 @dataclass
