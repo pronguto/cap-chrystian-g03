@@ -24,9 +24,6 @@ class IngredientsPurchase (db.Model):
         )
 
     purchase_id = Column(Integer, ForeignKey("purchases.purchase_id"), nullable=False)
-<<<<<<< HEAD
-=======
     
   
 
->>>>>>> develop
