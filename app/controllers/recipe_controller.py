@@ -15,6 +15,8 @@ from app.models.ingredient_model import Ingredient
 from flask_jwt_extended import jwt_required
 from app.models.recipe_ingredients_model import RecipeIngredient
 from sqlalchemy import and_
+from app.models.exceptions.ingredient_exception import KeysError
+from app.services import ingredient_service
 
 
 # @jwt_required()
@@ -28,6 +30,7 @@ def create_recipe():
     return jsonify(recipe)
 
 
+# @jwt_required()
 def recipe_ingredients_creator(id):
     data = request.get_json()
     recipe = Recipe.query.filter_by(recipe_id=id).first()
@@ -70,88 +73,71 @@ def get_all_recipes():
     return jsonify(teste)
 
 
-# # @jwt_required()
-# def get_by_name(name):
-# ingredients = db.session.query(Ingredient).all()
-# ingredients = [asdict(ingredient) for ingredient in ingredients]
-# recipe = db.session.query(Recipe).filter_by(recipe_name=name.lower()).first()
-# recipe = asdict(recipe)
-# recipe_ingredients = db.session.query(RecipeIngredient).all()
-# recipe_ingredients = [
-#     asdict(recipe_ingredient) for recipe_ingredient in recipe_ingredients
-# ]
-
-# teste = []
-# recipe["ingredients"] = []
-# for recipe_ingredient in recipe_ingredients:
-#     if recipe_ingredient["recipe_id"] == recipe["recipe_id"]:
-#         recipe["ingredients"].append(recipe_ingredient)
-#     for ingredient in ingredients:
-#         if ingredient["ingredient_id"] == recipe_ingredient["ingredient_id"]:
-#             recipe_ingredient.update(
-#                 {"ingredient_name": ingredient["ingredient_name"]}
-#             )
-
-
-# teste.append(recipe)
-# return jsonify(teste)
-
-
-def delete_by_name():
-    data = request.args
-    ingredients = (
-        db.session.query(Ingredient.ingredient_id)
-        .filter_by(ingredient_name=data["ing_name"])
-        .first()
-    )
-    # ingredients = [asdict(ingredient) for ingredient in ingredients]
-    ingredients = str(ingredients)
-
-    recipe = (
-        db.session.query(Recipe)
-        .filter(Recipe.recipe_name == data["name"].lower())
-        .first()
-    )
-    recipe = asdict(recipe)
+# @jwt_required()
+def patch_recipe(id):
+    new_data = request.get_json()
 
     recipe_ingredients = (
-        db.session.query(RecipeIngredient)
-        # .select_from(RecipeIngredient)
-        # .join(Recipe)
-        # .join(Ingredient)
-        .filter(
-            and_(
-                Recipe.recipe_id == recipe["recipe_id"],
-                Ingredient.ingredient_id == ingredients[1],
-            )
-        ).first()
+        db.session.query(RecipeIngredient).filter_by(recipe_id=id).first()
     )
 
-    # db.session.delete(recipe_ingredients)
-    # db.session.commit()
-    print(recipe_ingredients)
-    return jsonify(recipe)
+    for key, value in new_data.items():
+        setattr(recipe_ingredients, key, value)
+        print(f"****{recipe_ingredients}")
 
-    # recipe_ingredients = [
-    #     asdict(recipe_ingredient) for recipe_ingredient in recipe_ingredients
-    # ]
+    db.session.add(recipe_ingredients)
+    db.session.commit()
 
-    # teste = []
-    # new_recipe = []
-    # recipe["ingredients"] = []
+    return jsonify(recipe_ingredients), HTTPStatus.OK
 
-    # for recipe_ingredient in recipe_ingredients:
-    #     if recipe_ingredient["recipe_id"] == recipe["recipe_id"]:
-    #         recipe["ingredients"].append(recipe_ingredient)
-    #     for ingredient in ingredients:
-    #         if ingredient["ingredient_id"] == recipe_ingredient["ingredient_id"]:
-    #             recipe_ingredient.update(
-    #                 {"ingredient_name": ingredient["ingredient_name"]}
-    #             )
-    #             if ingredient["ingredient_name"] != data["ing_name"]:
-    #                 new_recipe.append(ingredient)
 
-    # teste.append(new_recipe)
+# @jwt_required()
+def get_recipe_by_name(name):
+    ingredients = db.session.query(Ingredient).all()
+    ingredients = [asdict(ingredient) for ingredient in ingredients]
+    recipe = db.session.query(Recipe).filter_by(recipe_name=name.lower()).first()
+    recipe = asdict(recipe)
+    recipe_ingredients = db.session.query(RecipeIngredient).all()
+    recipe_ingredients = [
+        asdict(recipe_ingredient) for recipe_ingredient in recipe_ingredients
+    ]
+
+    teste = []
+    recipe["ingredients"] = []
+    for recipe_ingredient in recipe_ingredients:
+        if recipe_ingredient["recipe_id"] == recipe["recipe_id"]:
+            recipe["ingredients"].append(recipe_ingredient)
+            for ingredient in ingredients:
+                if ingredient["ingredient_id"] == recipe_ingredient["ingredient_id"]:
+                    recipe_ingredient.update(
+                        {"ingredient_name": ingredient["ingredient_name"]}
+                    )
+
+            teste.append(recipe)
+        return jsonify(teste)
+
+
+# @jwt_required()
+def delete_recipe_by_id():
+    data = request.args
+    recipe_ingredients = (
+        db.session.query(RecipeIngredient)
+        .select_from(RecipeIngredient)
+        .join(Recipe)
+        .join(Ingredient)
+        .filter(
+            and_(
+                Recipe.recipe_id == data["recipe_id"],
+                Ingredient.ingredient_id == data["ingredient_id"],
+            )
+        )
+        .first()
+    )
+    if not recipe_ingredients:
+        return {"error": "id not found"}, 404
+    db.session.delete(recipe_ingredients)
+    db.session.commit()
+    return "", 204
 
 
 # @jwt_required()
