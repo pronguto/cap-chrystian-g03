@@ -87,7 +87,7 @@ def ingredient_by_name(name: str):
     return jsonify(seralize_ingredient), HTTPStatus.OK
 
 @jwt_required()
-def ingredient_updater():
+def ingredient_updater(name: str):
     data= request.get_json()
     session: Session= db.session()
     expected_keys= {"ingredient_name", "measurement_unit"}
@@ -97,7 +97,7 @@ def ingredient_updater():
         return e.message, e.status_code
     for key, val in data.items():
         data[key]= val.lower()
-    ingredient_patch= session.query(Ingredient).filter(Ingredient.ingredient_name==data["ingredient_name"].lower()).update({
+    ingredient_patch= session.query(Ingredient).filter(Ingredient.ingredient_name==name.lower()).update({
         Ingredient.ingredient_name: data["ingredient_name"],
         Ingredient.measurement_unit: data["measurement_unit"]
     })
