@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from app.configs.database import db
 from sqlalchemy import Column, Float, ForeignKey, Integer, Numeric
 
+from sqlalchemy.orm import relationship
+
 
 @dataclass
 class IngredientsPurchase (db.Model):
@@ -22,3 +24,9 @@ class IngredientsPurchase (db.Model):
         )
 
     purchase_id = Column(Integer, ForeignKey("purchases.purchase_id"), nullable=False)
+<<<<<<< HEAD
+=======
+    
+  
+
+>>>>>>> develop

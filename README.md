@@ -205,7 +205,7 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 ## BUSCA DE INGREDIENTES
 
-### POST /api/ingredients - Rota responsável pela BUSCA de ingrediente.
+### GET /api/ingredients - Rota responsável pela BUSCA de ingrediente.
 
 *OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
@@ -215,10 +215,92 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 ```json 
 
+    [
+        {
+            "ingredient_id": 1,
+            "ingredient_name": "trigo",
+            "measurement_unit": "g",
+            "purchases": [
+                {
+                    "purchase_id": 1,
+                    "purchase_price": 50.0,
+                    "purchase_quantity": 10.0
+                },
+                {
+                    "purchase_id": 2,
+                    "purchase_price": 30.0,
+                    "purchase_quantity": 5.0
+                },
+                {
+                    "purchase_id": 3,
+                    "purchase_price": 35.0,
+                    "purchase_quantity": 5.0
+                }
+            ]
+        },
+        {
+            "ingredient_id": 2,
+            "ingredient_name": "fermento",
+            "measurement_unit": "g",
+            "purchases": [
+                {
+                    "purchase_id": 1,
+                    "purchase_price": 36.0,
+                    "purchase_quantity": 3.0
+                }
+            ]
+        }
+    ]
+
+```
+
+### GET /api/ingredients/trigo - Rota responsável pela BUSCA de ingrediente.
+
+*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+
+#### Não possui corpo de requisição
+
+####  Corpo da resposta - STATUS CODE 200 - OK:
+
+```json 
+
+    [
+        {
+            "ingredient_id": 1,
+            "ingredient_name": "trigo",
+            "measurement_unit": "g",
+            "purchases": [
+                {
+                    "purchase_id": 1,
+                    "purchase_price": 50.0,
+                    "purchase_quantity": 10.0
+                },
+                {
+                    "purchase_id": 2,
+                    "purchase_price": 30.0,
+                    "purchase_quantity": 5.0
+                },
+                {
+                    "purchase_id": 3,
+                    "purchase_price": 35.0,
+                    "purchase_quantity": 5.0
+                }
+            ]
+        }
+    ]
+
+```
+### Possíveis erros
+
+
+Ingrediente não encontrado:  
+
+GET /api/ingredients/trigosed - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
+
+```json 
+
     {
-        "ingredient_id": 1,
-        "ingredient_name": "fermento",
-        "measurement_unit": "g"
+        "Error": "Ingredient not found"
     }
 
 ```
@@ -227,7 +309,7 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 ## ATUALIZAÇÃO DE INGREDIENTES
 
-### POST /api/ingredients - Rota responsável pela ATUALIZAÇÃO do ingrediente.
+### PATCH /api/ingredients - Rota responsável pela ATUALIZAÇÃO do ingrediente.
 
 *OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
@@ -256,7 +338,7 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 Caso o nome de uma das chaves esteja incorreta.
 
-POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
+PATCH /api/ingredients - FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
 
 ```json 
     {
@@ -274,7 +356,7 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
 
 Ingrediente não encontrado:  
 
-POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
+PATCH /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 ```json 
 
@@ -286,7 +368,7 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 Caso não exista o ingrediente.
 
-POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
+PATCH /api/ingredients - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 
 ```json 
 
@@ -300,7 +382,7 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 
 ## DELEÇÃO DE INGREDIENTES
 
-### POST /api/ingredients/<name> - Rota responsável pela DELEÇÃO de ingrediente.
+### DELETE /api/ingredients/<name> - Rota responsável pela DELEÇÃO de ingrediente.
 
 *OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
@@ -312,7 +394,7 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 
 Caso não exista o ingrediente.
 
-POST /api/ingredients/<name> - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
+DELETE /api/ingredients/<name> - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 
 ```json 
 
