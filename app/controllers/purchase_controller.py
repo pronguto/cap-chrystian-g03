@@ -25,7 +25,6 @@ def purchase_creator():
 
 # @jwt_required()
 def purchase_loader():
-
     session: Session = db.session
 
     """
@@ -59,7 +58,6 @@ def purchase_loader():
         .all()
     )
 
-    print(f"{query=}")
     purchases = [purchase._asdict() for purchase in query]
 
     return jsonify(purchases)
