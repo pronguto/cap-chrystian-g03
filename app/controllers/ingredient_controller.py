@@ -5,13 +5,14 @@ from app.configs.database import db
 from app.models.exceptions.ingredient_exception import KeysError
 from app.models.ingredient_model import Ingredient
 from app.models.ingredients_purchase_model import IngredientsPurchase
+from app.models.purchase_model import Purchase
 from app.services import ingredient_service
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy.orm import Query, Session
 
 
-# @jwt_required()
+@jwt_required()
 def ingredient_creator():
     data = request.get_json()
     session: Session = db.session()
@@ -32,7 +33,7 @@ def ingredient_creator():
     return jsonify(ingredient), HTTPStatus.CREATED
 
 
-# @jwt_required()
+@jwt_required()
 def ingredient_loader():
     session: Session = db.session()
 
@@ -53,10 +54,14 @@ def ingredient_loader():
             purchase_ingredient_id.append(purchase_ingredient)
         to_seralize_ingredient = []
         for purchase_id in purchase_ingredient_id:
+            query_include_date: Query= session.query(
+                Purchase.purchase_date,
+            ).filter_by(purchase_id= purchase_id.purchase_id).first()
             purchases_ingredient = {
                 "purchase_id": purchase_id[0],
                 "purchase_quantity": purchase_id[1],
                 "purchase_price": purchase_id[2],
+                "purchase_date": query_include_date[0]
             }
             to_seralize_ingredient.append(purchases_ingredient)
         seralize_ingredient = {"purchases": to_seralize_ingredient}
@@ -66,7 +71,7 @@ def ingredient_loader():
     return jsonify(sezalized_ingredients), HTTPStatus.OK
 
 
-# @jwt_required()
+@jwt_required()
 def ingredient_by_name(name: str):
     session: Session = db.session()
     base_query_ingredient: Query = (
@@ -88,10 +93,14 @@ def ingredient_by_name(name: str):
     for purchase_ingredient in base_query_ingredient_purchase:
         ingredient_purchase.append(purchase_ingredient)
     for purchase_id in ingredient_purchase:
+        query_include_date: Query= session.query(
+                Purchase.purchase_date,
+            ).filter_by(purchase_id= purchase_id.purchase_id).first()
         purchases_ingredient = {
             "purchase_id": purchase_id[0],
             "purchase_quantity": purchase_id[1],
             "purchase_price": purchase_id[2],
+            "purchase_date": query_include_date[0]
         }
         to_seralize_ingredient.append(purchases_ingredient)
     seralize_ingredient = {"purchases": to_seralize_ingredient}
