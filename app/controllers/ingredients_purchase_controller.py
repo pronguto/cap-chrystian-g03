@@ -1,5 +1,5 @@
 from dataclasses import asdict
-from flask import jsonify, request
+from flask import jsonify, request, session
 from flask_jwt_extended import (
     create_access_token,
     jwt_required,
@@ -58,11 +58,11 @@ def purchase_intervaler():
 #     return {"msg": "purchase by date"}
 
 
-@jwt_required()
-def purchase_updater():
-    return {"msg": "purchase updater"}
+#  @jwt_required()
+# def purchase_updater():
 
 
-@jwt_required()
+# @jwt_required()
 def purchase_deleter():
+
     return {"msg": "purchase deleter"}
