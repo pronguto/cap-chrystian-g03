@@ -14,3 +14,6 @@ bp_production.get("/<production_id>")(production_controller.production_by_id)
 bp_production.patch("/recipes/<production_id>")(production_controller.production_updater)
 bp_production.delete("/recipes/<production_id>")(production_controller.production_recipes_deleter)
 bp_production.delete("/<production_id>")(production_controller.production_deleter)
+
+bp_production.get("/gamma")(production_controller.gamma)
+

@@ -33,51 +33,7 @@ def ingredient_creator():
         return {"msg": "ingredient already exists"}, HTTPStatus.BAD_REQUEST
     return jsonify(ingredient), HTTPStatus.CREATED
 
-# @jwt_required()
-# def ingredient_loader():
-#     session: Session= db.session()
 
-#     base_query_ingredients: Query= session.query(Ingredient).all()
-#     sezalized_ingredients= []
-#     for ingredient in base_query_ingredients:
-#         base_query_ingredients_purchases: Query= session.query(
-#             IngredientsPurchase.purchase_id, 
-#             IngredientsPurchase.purchase_quantity, 
-#             IngredientsPurchase.purchase_price 
-#         ).filter_by(ingredient_id= ingredient.ingredient_id).all()
-#         purchase_ingredient_id=[]
-#         for purchase_ingredient in base_query_ingredients_purchases:
-#             purchase_ingredient_id.append(purchase_ingredient)
-#         to_seralize_ingredient=[]
-#         for purchase_id in purchase_ingredient_id:
-#             purchases_ingredient= {
-#             "purchase_id": purchase_id[0],
-#             "purchase_quantity": purchase_id[1],
-#             "purchase_price": purchase_id[2]
-#             }
-#             to_seralize_ingredient.append(purchases_ingredient)
-#         seralize_ingredient= {"purchases": to_seralize_ingredient}
-#         seralize_ingredient.update(asdict(ingredient))
-#         sezalized_ingredients.append(seralize_ingredient)
-
-#     return jsonify(sezalized_ingredients), HTTPStatus.OK
-
-def ingredient_loader():
-    ingredientes = loader(Ingredient)
-    compras = loader(IngredientsPurchase)
-    purchases = loader(Purchase)
-
-    lista_de_ingredientes = []
-    for ingrediente in ingredientes:
-        ingrediente["purchases"] = []
-        for compra in compras:
-            if compra["ingredient_id"] == ingrediente["ingredient_id"]:
-                ingrediente["purchases"].append(compra)
-            for purchase in purchases:
-                if purchase["purchase_id"] == compra["purchase_id"]:
-                    compra.update({"purchase_date": purchase["purchase_date"]})
-        lista_de_ingredientes.append(ingrediente)
-    return jsonify(lista_de_ingredientes)
 
 @jwt_required()
 def ingredient_loader():
@@ -113,50 +69,6 @@ def ingredient_loader():
         seralize_ingredient = {"purchases": to_seralize_ingredient}
         seralize_ingredient.update(asdict(ingredient))
         sezalized_ingredients.append(seralize_ingredient)
-
-def ingredient_by_name(name):
-    ingrediente = db.session.query(Ingredient).filter_by(ingredient_name = name).first()
-    ingrediente = asdict(ingrediente)
-    compras = loader(IngredientsPurchase)
-    purchases = loader(Purchase)
-
-    lista_de_ingredientes = []
-    
-    ingrediente["purchases"] = []
-    for compra in compras:
-        if compra["ingredient_id"] == ingrediente["ingredient_id"]:
-            ingrediente["purchases"].append(compra)
-        for purchase in purchases:
-            if purchase["purchase_id"] == compra["purchase_id"]:
-                compra.update({"purchase_date": purchase["purchase_date"]})
-    lista_de_ingredientes.append(ingrediente)
-    return jsonify(lista_de_ingredientes)
-
-# @jwt_required()
-# def ingredient_by_name(name: str):
-#     session: Session= db.session()
-#     base_query_ingredient: Query= session.query(Ingredient).filter_by(ingredient_name= name.lower()).first()
-#     if not base_query_ingredient:
-#         return {"Error": "Ingredient not found"}, HTTPStatus.NOT_FOUND
-#     base_query_ingredient_purchase: Query= session.query(
-#         IngredientsPurchase.purchase_id, 
-#         IngredientsPurchase.purchase_quantity, 
-#         IngredientsPurchase.purchase_price 
-#     ).filter_by(ingredient_id= base_query_ingredient.ingredient_id).all()
-#     ingredient_purchase= []
-#     to_seralize_ingredient= []
-#     for purchase_ingredient in base_query_ingredient_purchase:
-#         ingredient_purchase.append(purchase_ingredient)
-#     for purchase_id in ingredient_purchase:
-#         purchases_ingredient= {
-#             "purchase_id": purchase_id[0],
-#             "purchase_quantity": purchase_id[1],
-#             "purchase_price": purchase_id[2] 
-#         }
-#         to_seralize_ingredient.append(purchases_ingredient)
-#     seralize_ingredient= {"purchases": to_seralize_ingredient}
-#     seralize_ingredient.update(asdict(base_query_ingredient))
-#     return jsonify(seralize_ingredient), HTTPStatus.OK
 
 @jwt_required()
 def ingredient_by_name(name: str):
@@ -227,3 +139,25 @@ def ingredient_deleter(name: str):
     session.delete(ingredient_delet)
     session.commit()
     return "", HTTPStatus.NO_CONTENT
+
+def beta():
+    purchases = loader(Purchase)
+    compras = loader(IngredientsPurchase)
+    ingredientes = loader(Ingredient)
+    
+    lista_de_compras = []
+    for ingrediente in ingredientes:
+        total_list = []
+        total_qty = []
+        for compra in compras:
+            if ingrediente["ingredient_id"] == compra["ingredient_id"]:
+                total_list.append(compra["purchase_price"])
+                total_qty.append(compra["purchase_quantity"])
+            for purchase in purchases:
+                if compra["purchase_id"] == purchase["purchase_id"]:
+                    compra.update({"purchase_date": purchase["purchase_date"]})
+        ingrediente["purchase_total"] = sum(total_list)
+        ingrediente["ingredient_qty"] = sum(total_qty)
+        lista_de_compras.append(ingrediente)
+
+    return jsonify(lista_de_compras)
