@@ -10,6 +10,7 @@ from app.services import ingredient_service
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy.orm import Query, Session
+from app.services.query_services import loader
 
 
 @jwt_required()
@@ -31,6 +32,7 @@ def ingredient_creator():
     except:
         return {"msg": "ingredient already exists"}, HTTPStatus.BAD_REQUEST
     return jsonify(ingredient), HTTPStatus.CREATED
+
 
 
 @jwt_required()
@@ -67,9 +69,6 @@ def ingredient_loader():
         seralize_ingredient = {"purchases": to_seralize_ingredient}
         seralize_ingredient.update(asdict(ingredient))
         sezalized_ingredients.append(seralize_ingredient)
-
-    return jsonify(sezalized_ingredients), HTTPStatus.OK
-
 
 @jwt_required()
 def ingredient_by_name(name: str):
@@ -140,3 +139,25 @@ def ingredient_deleter(name: str):
     session.delete(ingredient_delet)
     session.commit()
     return "", HTTPStatus.NO_CONTENT
+
+def beta():
+    purchases = loader(Purchase)
+    compras = loader(IngredientsPurchase)
+    ingredientes = loader(Ingredient)
+    
+    lista_de_compras = []
+    for ingrediente in ingredientes:
+        total_list = []
+        total_qty = []
+        for compra in compras:
+            if ingrediente["ingredient_id"] == compra["ingredient_id"]:
+                total_list.append(compra["purchase_price"])
+                total_qty.append(compra["purchase_quantity"])
+            for purchase in purchases:
+                if compra["purchase_id"] == purchase["purchase_id"]:
+                    compra.update({"purchase_date": purchase["purchase_date"]})
+        ingrediente["purchase_total"] = sum(total_list)
+        ingrediente["ingredient_qty"] = sum(total_qty)
+        lista_de_compras.append(ingrediente)
+
+    return jsonify(lista_de_compras)

@@ -1,6 +1,6 @@
 from dataclasses import asdict
 import re
-from flask import jsonify
+from flask import jsonify, request
 from flask_jwt_extended import (
     create_access_token,
     jwt_required,
@@ -8,12 +8,15 @@ from flask_jwt_extended import (
 )
 from sqlalchemy.orm import Session, Query
 from datetime import datetime
-from flask import request
+from app.models.production_recipes_model import ProductionRecipe
 from app.models.purchase_model import Purchase
-from app.configs.database import db
-from app.models.ingredient_model import Ingredient
 from app.models.ingredients_purchase_model import IngredientsPurchase
+from app.models.ingredient_model import Ingredient
+from app.models.production_model import Production
+from app.models.recipe_model import Recipe
+from app.configs.database import db
 from sqlalchemy import and_
+from app.services.query_services import loader
 
 
 def purchase_creator():
@@ -24,7 +27,9 @@ def purchase_creator():
 
 
 # @jwt_required()
-def purchase_loader():
+def purchases_loader():
+
+
     session: Session = db.session
 
     """
@@ -62,8 +67,32 @@ def purchase_loader():
 
     return jsonify(purchases)
 
+def gustavo_challenge():
+    purchases = loader(Purchase)
+    compras = loader(IngredientsPurchase)
+    ingredientes = loader(Ingredient)
 
-# @jwt_required()
+    data = request.args
+    initial_date = datetime.strptime(data["initial_date"],"%d-%m-%Y").date()
+    final_date = datetime.strptime(data["final_date"], "%d-%m-%Y").date()
+    
+    lista_de_compras = []
+    for purchase in purchases:
+        purchase["purchase"] = []
+        total_list = []
+        if purchase["purchase_date"] > initial_date and purchase["purchase_date"] < final_date:
+            for compra in compras:
+                if purchase["purchase_id"] == compra["purchase_id"]:
+                    purchase["purchase"].append(compra)
+                    total_list.append(compra["purchase_price"])
+                    for ingrediente in ingredientes:
+                        if compra["ingredient_id"] == ingrediente["ingredient_id"]:
+                            compra.update({"ingredient_name": ingrediente["ingredient_name"]})
+        purchase["purchase_total"] = sum(total_list)
+        lista_de_compras.append(purchase)
+
+    return jsonify(lista_de_compras)
+
 def purchase_intervaler():
     session: Session = db.session
 
@@ -132,5 +161,19 @@ def purchase_deleter(id):
 
     session.delete(purchase)
     session.commit()
-
     return "", 204
+
+def alfa():
+    purchases = loader(Purchase)
+    compras = loader(IngredientsPurchase)
+
+    lista_de_compras = []
+    for purchase in purchases:
+        total_list = []
+        for compra in compras:
+            if purchase["purchase_id"] == compra["purchase_id"]:
+                total_list.append(compra["purchase_price"])
+        purchase["purchase_total"] = sum(total_list)
+        lista_de_compras.append(purchase)
+
+    return jsonify(lista_de_compras)

@@ -7,6 +7,8 @@ from sqlalchemy.orm import Query, Session
 from app.models.exceptions.ingredient_exception import KeysError
 from app.models.production_model import Production
 from app.models.production_recipes_model import ProductionRecipe
+from app.models.recipe_model import Recipe
+from app.services.query_services import loader
 from app.configs.database import db
 from sqlalchemy import and_
 from flask_jwt_extended import (
@@ -277,3 +279,24 @@ def production_deleter(production_id):
     session.delete(productions)
     session.commit()
     return "", HTTPStatus.NO_CONTENT
+
+def gamma():
+    productions = loader(Production)
+    formulas = loader(ProductionRecipe)
+    recetas = loader(Recipe)
+
+    lista_de_consumo = []
+    for receta in recetas:
+        receta["productions"] = []
+        total_list = []
+        for formula in formulas:
+            if receta["recipe_id"] == formula["recipe_id"]:
+                receta["productions"].append(formula)
+                total_list.append(formula["recipe_quantity"])
+            for production in productions:
+                if formula["production_id"] == production["production_id"]:
+                    formula.update({"production_date": production["production_date"]})
+        receta["quantity_total"] = sum(total_list)
+        lista_de_consumo.append(receta)
+
+    return jsonify(lista_de_consumo)
