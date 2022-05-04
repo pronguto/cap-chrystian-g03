@@ -199,13 +199,15 @@ FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
 
 ```json 
     {
-        "expected keys": [
-            "recipe_id",
-		    "recipe_quantity"
-        ],
-        "recived keys": [
-            "recipe_id",
-		    "recipe_quantity"
+        "expected keys": 
+		[
+            		"recipe_id",
+		    	"recipe_quantity"
+        	],
+        "recived keys": 
+		[
+            		"recipe_id",
+		   	"recipe_quantity"
         ]
     }
 ```
@@ -406,14 +408,16 @@ FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
 
 ```json 
     {
-        "expected keys": [
-            "recipe_id",
-		    "recipe_quantity"
-        ],
-        "recived keys": [
-            "recipe_id",
-		    "recipe_quantity"
-        ]
+        "expected keys":
+		[
+            		"recipe_id",
+		    	"recipe_quantity"
+		],
+        "recived keys": 
+		[
+            		"recipe_id",
+		    	"recipe_quantity"
+		]		
     }
 ```
 
