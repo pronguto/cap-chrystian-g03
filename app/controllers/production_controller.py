@@ -17,7 +17,7 @@ from flask_jwt_extended import (
 
 from app.services import ingredient_service
 
-@jwt_required()
+#@jwt_required()
 def production_creator():
     session: Session = db.session
 
@@ -28,7 +28,7 @@ def production_creator():
 
     return jsonify(product), HTTPStatus.CREATED
 
-@jwt_required()
+#@jwt_required()
 def production_recipes_creator(production_id):
     session: Session = db.session
     data = request.get_json()
@@ -47,7 +47,7 @@ def production_recipes_creator(production_id):
 
     return jsonify(productionrecipe), HTTPStatus.CREATED
 
-@jwt_required()
+#@jwt_required()
 def production_loader():
 
     session: Session = db.session
@@ -79,12 +79,12 @@ def production_loader():
 
     return jsonify(sezalized_production), HTTPStatus.OK
 
-@jwt_required()
+#@jwt_required()
 def production_intervaler():
     session: Session = db.session
     data = request.args
-    initial_date = datetime.strptime(data["initial_date"], "%d/%m/%Y").date()
-    final_date = datetime.strptime(data["final_date"], "%d/%m/%Y").date()
+    initial_date = datetime.strptime(data["initial_date"], "%d-%m-%Y").date()
+    final_date = datetime.strptime(data["final_date"], "%d-%m-%Y").date()
     
     
     Productions: Query = (
@@ -124,12 +124,12 @@ def production_intervaler():
 
     return jsonify(sezalized_production), HTTPStatus.OK
 
-@jwt_required()
+#@jwt_required()
 def production_by_date():
     session: Session = db.session
     data = request.args
 
-    date = datetime.strptime(data["date"], "%d/%m/%Y").date()
+    date = datetime.strptime(data["date"], "%d-%m-%Y").date()
 
     Productions: Query = (
         session.query(Production)
@@ -168,7 +168,7 @@ def production_by_date():
 
     return jsonify(sezalized_production), HTTPStatus.OK
 
-@jwt_required()
+#@jwt_required()
 def production_by_id(production_id):
     session: Session = db.session
 
@@ -209,7 +209,7 @@ def production_by_id(production_id):
     return jsonify(sezalized_production), HTTPStatus.OK
 
 
-@jwt_required()
+#@jwt_required()
 def production_updater(production_id):
     data = request.get_json()
     session: Session = db.session
@@ -248,9 +248,9 @@ def production_updater(production_id):
     )
     products = [product._asdict() for product in productionsrecipe]
  
-    return jsonify(products), HTTPStatus.OK
+    return jsonify(products[0]), HTTPStatus.OK
 
-@jwt_required()
+#@jwt_required()
 def production_recipes_deleter(production_id):
     session: Session = db.session()
 
@@ -264,7 +264,7 @@ def production_recipes_deleter(production_id):
     session.commit()
     return "", HTTPStatus.NO_CONTENT
 
-@jwt_required()
+#@jwt_required()
 def production_deleter(production_id):
     session: Session = db.session()
 
