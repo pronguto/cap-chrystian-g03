@@ -11,6 +11,7 @@ from app.models.recipe_model import Recipe
 from app.services.query_services import loader
 from app.configs.database import db
 from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError, DataError
 from flask_jwt_extended import (
     create_access_token,
     jwt_required,
@@ -19,7 +20,7 @@ from flask_jwt_extended import (
 
 from app.services import ingredient_service
 
-@jwt_required()
+#@jwt_required()
 def production_creator():
     session: Session = db.session
 
@@ -30,7 +31,7 @@ def production_creator():
 
     return jsonify(product), HTTPStatus.CREATED
 
-@jwt_required()
+#@jwt_required()
 def production_recipes_creator(production_id):
     session: Session = db.session
     data = request.get_json()
@@ -44,12 +45,20 @@ def production_recipes_creator(production_id):
     data["production_id"]=int(production_id)
     productionrecipe = ProductionRecipe(**data)
 
-    session.add(productionrecipe)
-    session.commit()
+    try:
+        session.add(productionrecipe)
+        session.commit()
+    except IntegrityError:
+        return {"msg":"recipe_id no existent"}, HTTPStatus.BAD_REQUEST
+    except DataError:
+        return {"msg":"values invalid", "exeple":{
+		"recipe_id":1,
+	 	"recipe_quantity":1.5
+	}}
 
     return jsonify(productionrecipe), HTTPStatus.CREATED
 
-@jwt_required()
+#@jwt_required()
 def production_loader():
 
     session: Session = db.session
@@ -81,12 +90,12 @@ def production_loader():
 
     return jsonify(sezalized_production), HTTPStatus.OK
 
-@jwt_required()
+#@jwt_required()
 def production_intervaler():
     session: Session = db.session
     data = request.args
-    initial_date = datetime.strptime(data["initial_date"], "%d/%m/%Y").date()
-    final_date = datetime.strptime(data["final_date"], "%d/%m/%Y").date()
+    initial_date = datetime.strptime(data["initial_date"], "%d-%m-%Y").date()
+    final_date = datetime.strptime(data["final_date"], "%d-%m-%Y").date()
     
     
     Productions: Query = (
@@ -126,12 +135,12 @@ def production_intervaler():
 
     return jsonify(sezalized_production), HTTPStatus.OK
 
-@jwt_required()
+#@jwt_required()
 def production_by_date():
     session: Session = db.session
     data = request.args
 
-    date = datetime.strptime(data["date"], "%d/%m/%Y").date()
+    date = datetime.strptime(data["date"], "%d-%m-%Y").date()
 
     Productions: Query = (
         session.query(Production)
@@ -170,7 +179,7 @@ def production_by_date():
 
     return jsonify(sezalized_production), HTTPStatus.OK
 
-@jwt_required()
+#@jwt_required()
 def production_by_id(production_id):
     session: Session = db.session
 
@@ -208,10 +217,13 @@ def production_by_id(production_id):
         seralize_production.update(asdict(production))
         sezalized_production.append(seralize_production)
 
+    if not sezalized_production:
+        return {"Error": "id not found"}, HTTPStatus.NOT_FOUND
+
     return jsonify(sezalized_production), HTTPStatus.OK
 
 
-@jwt_required()
+#@jwt_required()
 def production_updater(production_id):
     data = request.get_json()
     session: Session = db.session
@@ -221,16 +233,22 @@ def production_updater(production_id):
         ingredient_service.validate_keys(body_request=data, expected_keys= expected_keys)
     except KeysError as e:
         return e.message, e.status_code
-
-    query: Query = (
-        session.query(ProductionRecipe)
-            .filter(ProductionRecipe.id == production_id
-            )).update({
-                ProductionRecipe.recipe_id: data["recipe_id"],
-                ProductionRecipe.recipe_quantity: data["recipe_quantity"]
-            })
     
-    session.commit()
+    try:
+        query: Query = (
+            session.query(ProductionRecipe)
+                .filter(ProductionRecipe.id == production_id
+                )).update({
+                    ProductionRecipe.recipe_id: data["recipe_id"],
+                    ProductionRecipe.recipe_quantity: data["recipe_quantity"]
+                })
+    except IntegrityError:
+        return {"msg":"recipe_id no existent"}, HTTPStatus.BAD_REQUEST
+    except DataError:
+        return {"msg":"values invalid", "exeple":{
+		"recipe_id":1,
+	 	"recipe_quantity":1.5
+	}}, HTTPStatus.BAD_REQUEST
 
     productionsrecipe: Query = (
         session.query(Production.production_id, 
@@ -249,10 +267,13 @@ def production_updater(production_id):
             .all()
     )
     products = [product._asdict() for product in productionsrecipe]
- 
-    return jsonify(products), HTTPStatus.OK
 
-@jwt_required()
+    if not products:
+        return {"Error": "id not found"}, HTTPStatus.BAD_REQUEST
+ 
+    return jsonify(products[0]), HTTPStatus.OK
+
+#@jwt_required()
 def production_recipes_deleter(production_id):
     session: Session = db.session()
 
@@ -260,13 +281,13 @@ def production_recipes_deleter(production_id):
         ProductionRecipe.query.filter_by(id = production_id).first()
     )
     if not productionsrecipe:
-        return {"Error": "ProductionRicipe not found"}, HTTPStatus.NOT_FOUND
+        return {"Error": "id not found"}, HTTPStatus.NOT_FOUND
     
     session.delete(productionsrecipe)
     session.commit()
     return "", HTTPStatus.NO_CONTENT
 
-@jwt_required()
+#@jwt_required()
 def production_deleter(production_id):
     session: Session = db.session()
 
@@ -274,7 +295,7 @@ def production_deleter(production_id):
         Production.query.filter_by(production_id = production_id).first()
     )
     if not productions:
-        return {"Error": "Production not found"}, HTTPStatus.NOT_FOUND
+        return {"Error": "id not found"}, HTTPStatus.NOT_FOUND
     
     session.delete(productions)
     session.commit()

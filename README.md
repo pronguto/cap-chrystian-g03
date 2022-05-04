@@ -141,6 +141,363 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 ---------------------------------------------------------------
 ---------------------------------------------------------------
 
+# Produção
+
+## CADASTRO DE PRODUÇÃO
+
+### POST /api/producions
+
+####  Requisição sem corpo:
+
+#####   -     Obs: para crear uma produção preciso fazer o login e utilizar o token auth.
+
+####  Corpo da resposta - STATUS CODE 201 - CREATED:
+
+```json
+    {
+        "production_date": "Tue, 03 May 2022 00:00:00 GMT",
+        "production_id": 32
+    }
+```
+
+---------------------------------------------------------------
+
+## INCERÇÃO DE RECEITAS NA PRODUÇÃO
+
+### POST /api/producions/<id>
+
+OBS: PASSAR ID DA PRODUÇÃO QUE IRA RECEBER A RECEITA 
+
+####  Corpo da requisição:
+
+```json
+	{
+		"recipe_id":1,
+	 	"recipe_quantity":50
+	}
+```
+
+#####   -     Obs: para crear uma produção preciso fazer o login e utilizar o token auth.
+
+####  Corpo da resposta - STATUS CODE 201 - CREATED:
+
+```json
+    {
+        "id": 10,
+        "production_id": 30,
+        "recipe_id": 1,
+        "recipe_quantity": 50.0
+    }
+```
+
+
+### Possíveis erros
+
+Caso o nome de uma das chaves esteja incorreta.
+
+FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
+
+```json 
+    {
+        "expected keys": 
+		[
+            		"recipe_id",
+		    	"recipe_quantity"
+        	],
+        "recived keys": 
+		[
+            		"recipe_id",
+		   	"recipe_quantity"
+        ]
+    }
+```
+
+Valor invalido:  
+
+FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
+
+```json 
+    {
+	    "exeple": 
+        {
+		    "recipe_id": 1,
+		    "recipe_quantity": 1.5
+	    },
+	    "msg": "values invalid"
+    }
+```
+
+---------------------------------------------------------------
+
+## BUSCAR TODAS AS PRODUÇÃO
+
+### GET /api/producions
+
+####  Requisição sem corpo:
+
+#####   -     Obs: para buscar uma produção preciso fazer o login e utilizar o token auth.
+
+####  Corpo da resposta - STATUS CODE 200 - OK:
+
+```json
+    [
+        {
+            "production_date": "Sun, 01 May 2022 00:00:00 GMT",
+            "production_id": 28,
+            "recipes": [
+                {
+                    "id": 9,
+                    "production_id": 28,
+                    "recipe_id": 1,
+                    "recipe_quantity": 500.0
+                }
+            ]
+        },
+        {
+            "production_date": "Sun, 01 May 2022 00:00:00 GMT",
+            "production_id": 29,
+            "recipes": []
+        }
+    ]
+```
+
+---------------------------------------------------------------
+
+## BUSCAR PRODUÇÃO POR INTERVALO
+
+### GET /api/producions/intervalo?initial_date=01-05-2022&final_date=02-05-2022
+
+OBS: PASSAR A DATA INICIAL (initial_date=XX-XX-XXXX) E FINAL (final_date=XX-XX-XXXX) PARA DEFINIR O INTERVALO
+
+####  Requisição sem corpo:
+
+#####   -     Obs: para buscar uma produção preciso fazer o login e utilizar o token auth.
+
+####  Corpo da resposta - STATUS CODE 200 - OK:
+
+```json
+    [
+        {
+            "production_date": "Sun, 01 May 2022 00:00:00 GMT",
+            "production_id": 28,
+            "recipes": [
+                {
+                    "id": 9,
+                    "production_id": 28,
+                    "recipe_id": 1,
+                    "recipe_quantity": 500.0
+                }
+            ]
+        },
+        {
+            "production_date": "Sun, 02 May 2022 00:00:00 GMT",
+            "production_id": 29,
+            "recipes": []
+        }
+    ]
+```
+
+---------------------------------------------------------------
+
+## BUSCAR PRODUÇÃO POR DATA
+
+### GET /api/producions/date?date=01-05-2022
+
+OBS: PASSAR A DATA (initial_date=XX-XX-XXXX) DEFINIDA
+
+####  Requisição sem corpo:
+
+#####   -     Obs: para buscar uma produção preciso fazer o login e utilizar o token auth.
+
+####  Corpo da resposta - STATUS CODE 200 - OK:
+
+```json
+    [
+        {
+            "production_date": "Sun, 01 May 2022 00:00:00 GMT",
+            "production_id": 28,
+            "recipes": [
+                {
+                    "id": 9,
+                    "production_id": 28,
+                    "recipe_id": 1,
+                    "recipe_quantity": 500.0
+                }
+            ]
+        }
+    ]
+```
+
+---------------------------------------------------------------
+
+## BUSCAR PRODUÇÃO POR ID
+
+### GET /api/producions/<ID>
+
+OBS: PASSAR ID EXPECIFICO
+
+####  Requisição sem corpo:
+
+#####   -     Obs: para buscar uma produção preciso fazer o login e utilizar o token auth.
+
+####  Corpo da resposta - STATUS CODE 200 - OK:
+
+```json
+    [
+        {
+            "production_date": "Sun, 01 May 2022 00:00:00 GMT",
+            "production_id": 28,
+            "recipes": [
+                {
+                    "id": 9,
+                    "production_id": 28,
+                    "recipe_id": 1,
+                    "recipe_quantity": 500.0
+                }
+            ]
+        }
+    ]
+```
+### Possíveis erros
+
+Id não encontrado.
+
+FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
+
+```json 
+    {
+	    "Error": "id not found"
+    }
+```
+
+
+---------------------------------------------------------------
+
+## ALTERAR UMA RECEITA PRODUZIDA 
+
+### PTCH /api/producions/recipes/<ID>
+
+OBS: PASSAR ID DA RECEITA PERTECENTE A UMA PRODUÇÃO PARA A ALTERAÇÃO
+
+####  Corpo da requisição:
+```json
+    {
+        "recipe_id": 1,
+        "recipe_quantity": 500
+    }
+```
+
+#####   -     Obs: para alterar uma produção preciso fazer o login e utilizar o token auth.
+
+####  Corpo da resposta - STATUS CODE 200 - OK:
+
+```json
+    {
+        "id": 9,
+        "production_id": 28,
+        "recipe_id": 1,
+        "recipe_quantity": 500.0
+    }
+```
+
+### Possíveis erros
+
+Caso o nome de uma das chaves esteja incorreta.
+
+FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
+
+```json 
+    {
+        "expected keys":
+		[
+            		"recipe_id",
+		    	"recipe_quantity"
+		],
+        "recived keys": 
+		[
+            		"recipe_id",
+		    	"recipe_quantity"
+		]		
+    }
+```
+
+Valor invalido:  
+
+FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
+
+```json 
+    {
+	    "exeple": 
+        {
+		    "recipe_id": 1,
+		    "recipe_quantity": 1.5
+	    },
+	    "msg": "values invalid"
+    }
+```
+
+Id não encontrado:  
+
+FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
+
+```json 
+    {
+	    "msg":  "id not found"
+    }
+```
+---------------------------------------------------------------
+
+## DELETAR UMA RECEITA PRODUZIDA 
+
+### GET /api/producions/recipes/<ID>
+
+OBS: PASSAR ID DA RECEITA PERTECENTE A UMA PRODUÇÃO PARA A DELEÇÃO
+
+####  Requisição sem corpo:
+
+#####   -     Obs: para deletar uma receita produzida preciso fazer o login e utilizar o token auth.
+
+####  Requisição sem corpo - STATUS CODE 204 - NO CONTENT:
+
+### Possíveis erros
+
+Id não encontrado.
+
+FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
+
+```json 
+    {
+	    "Error": "id not found"
+    }
+```
+---------------------------------------------------------------
+
+## DELETAR UMA PRODUÇÃO 
+
+### GET /api/producions/recipes/<ID>
+
+OBS: PASSAR ID DA PRODUÇÃO PARA A DELEÇÃO
+
+####  Requisição sem corpo:
+
+#####   -     Obs: para deletar uma produção preciso fazer o login e utilizar o token auth.
+
+####  Requisição sem corpo - STATUS CODE 204 - NO CONTENT:
+
+### Possíveis erros
+
+Id não encontrado.
+
+FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
+
+```json 
+    {
+	    "Error": "id not found"
+    }
+```
+---------------------------------------------------------------
+---------------------------------------------------------------
+
 # Ingredientes
 
 ## CADASTRO DE INGREDIENTES
