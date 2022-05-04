@@ -12,3 +12,5 @@ bp_purchase.delete("")(purchase_controller.purchase_deleter)
 bp_purchase.get("/production")(purchase_controller.production_loader)
 bp_purchase.patch("/<id>")(purchase_controller.purchase_updater)
 bp_purchase.delete("/<id>")(purchase_controller.purchase_deleter)
+
+bp_purchase.get("")(purchase_controller.alfa)
