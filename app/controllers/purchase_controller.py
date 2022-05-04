@@ -1,6 +1,6 @@
 from dataclasses import asdict
 import re
-from flask import jsonify
+from flask import jsonify, request
 from flask_jwt_extended import (
     create_access_token,
     jwt_required,
@@ -8,15 +8,15 @@ from flask_jwt_extended import (
 )
 from sqlalchemy.orm import Session, Query
 from datetime import datetime
-from flask import request
+from app.models.production_recipes_model import ProductionRecipe
 from app.models.purchase_model import Purchase
 from app.models.ingredients_purchase_model import IngredientsPurchase
 from app.models.ingredient_model import Ingredient
-from sqlalchemy.orm import Query, Session
+from app.models.production_model import Production
+from app.models.recipe_model import Recipe
 from app.configs.database import db
-from app.models.ingredient_model import Ingredient
-from app.models.ingredients_purchase_model import IngredientsPurchase
 from sqlalchemy import and_
+from app.services.query_services import loader
 
 
 def purchase_creator():
@@ -28,124 +28,176 @@ def purchase_creator():
 
 # @jwt_required()
 def purchase_loader():
+    purchases = loader(Purchase)
+    compras = loader(IngredientsPurchase)
 
-    session: Session = db.session
+    lista_de_compras = []
+    for purchase in purchases:
+        total_list = []
+        for compra in compras:
+            if purchase["purchase_id"] == compra["purchase_id"]:
+                total_list.append(compra["purchase_price"])
+        purchase["purchase_total"] = sum(total_list)
+        lista_de_compras.append(purchase)
 
-    """
-    select 
-        "ingredient_name" ingredients,
-        "measurement_unit" ingredients,	
-        "purchase_quantity" ingredients_purchase,
-        "purchase_price" ingredients_purchase,
-        "purchase_date" purchases
-    from ingredients ing
-    join ingredients_purchase ip 
-	    on ing.ingredient_id = ip.ingredient_id 
-    join purchases purch
-	    on purch.purchase_id = ip.purchase_id 
+    # total = purchases_sumator(compras,"purchase_price")
+    # lista_de_compras.append(total)
 
-    """
+    return jsonify(lista_de_compras)
 
-    query: Query = (
-        session.query(
-            Ingredient.ingredient_name,
-            Ingredient.ingredient_id,
-            Ingredient.measurement_unit,
-            IngredientsPurchase.purchase_quantity,
-            IngredientsPurchase.purchase_price,
-            Purchase.purchase_date,
-        )
-        .select_from(Purchase)
-        .join(IngredientsPurchase)
-        .join(Ingredient)
-        .all()
-    )
+def production_loader():
+    productions = loader(Production)
+    formulas = loader(ProductionRecipe)
+    recetas = loader(Recipe)
 
-    print(f"{query=}")
-    purchases = [purchase._asdict() for purchase in query]
+    lista_de_consumo = []
+    for receta in recetas:
+        receta["productions"] = []
+        total_list = []
+        for formula in formulas:
+            if receta["recipe_id"] == formula["recipe_id"]:
+                receta["productions"].append(formula)
+                total_list.append(formula["recipe_quantity"])
+            for production in productions:
+                if formula["production_id"] == production["production_id"]:
+                    formula.update({"production_date": production["production_date"]})
+        receta["quantity_total"] = sum(total_list)
+        lista_de_consumo.append(receta)
 
-    return jsonify(purchases)
-    return jsonify(purchases)
+    return jsonify(lista_de_consumo)
 
 
 # @jwt_required()
+# def purchase_intervaler():
+#     session: Session = db.session
+#     data = request.args
+#     initial_date = datetime.strptime(data["initial_date"], "%d-%m-%Y").date()
+#     final_date = datetime.strptime(data["final_date"], "%d-%m-%Y").date()
+#     query: Query = (
+#         session.query(
+#             Purchase.purchase_id,
+#             Purchase.purchase_date,
+#             Ingredient.ingredient_id,
+#             Ingredient.ingredient_name,
+#             IngredientsPurchase.purchase_quantity,
+#             IngredientsPurchase.purchase_price,
+#         )
+#         .select_from(Purchase)
+#         .join(IngredientsPurchase)
+#         .join(Ingredient)
+#         .filter(
+#             and_(
+#                 Purchase.purchase_date > initial_date,
+#                 Purchase.purchase_date < final_date,
+#             )
+#         )
+#         .order_by(Purchase.purchase_id)
+#         .all()
+#     )
+#     purchases = [purchase._asdict() for purchase in query]
+#     return jsonify(purchases)
+
 def purchase_intervaler():
-    session: Session = db.session
+    purchases = loader(Purchase)
+    compras = loader(IngredientsPurchase)
+    ingredientes = loader(Ingredient)
+
     data = request.args
-    initial_date = datetime.strptime(data["initial_date"], "%d-%m-%Y").date()
+    initial_date = datetime.strptime(data["initial_date"],"%d-%m-%Y").date()
     final_date = datetime.strptime(data["final_date"], "%d-%m-%Y").date()
-    query: Query = (
-        session.query(
-            Purchase.purchase_id,
-            Purchase.purchase_date,
-            Ingredient.ingredient_id,
-            Ingredient.ingredient_name,
-            IngredientsPurchase.purchase_quantity,
-            IngredientsPurchase.purchase_price,
-        )
-        .select_from(Purchase)
-        .join(IngredientsPurchase)
-        .join(Ingredient)
-        # from sqlalchemy import and_
-        .filter(
-            and_(
-                Purchase.purchase_date > initial_date,
-                Purchase.purchase_date < final_date,
-            )
-        )
-        .order_by(Purchase.purchase_id)
-        .all()
-    )
-    purchases = [purchase._asdict() for purchase in query]
-    return jsonify(purchases)
+    
+    lista_de_compras = []
+    for purchase in purchases:
+        purchase["purchase"] = []
+        total_list = []
+        if purchase["purchase_date"] > initial_date and purchase["purchase_date"] < final_date:
+            for compra in compras:
+                if purchase["purchase_id"] == compra["purchase_id"]:
+                    purchase["purchase"].append(compra)
+                    total_list.append(compra["purchase_price"])
+                    for ingrediente in ingredientes:
+                        if compra["ingredient_id"] == ingrediente["ingredient_id"]:
+                            compra.update({"ingredient_name": ingrediente["ingredient_name"]})
+        purchase["purchase_total"] = sum(total_list)
+        lista_de_compras.append(purchase)
+
+    total = unico(lista_de_compras)
+    lista_de_compras.append(total)
+
+    return jsonify(lista_de_compras)
 
 
 # def purchase_by_date():
 #     return {"msg": "purchase by date"}
 
 
-def purchase_updater(id):
-    data = request.get_json()
+# def purchase_updater(id):
+#     data = request.get_json()
 
-    session: Session = db.session
+#     session: Session = db.session
 
-    """
-    select 
-        "ingredient_name" ingredients,
-        "measurement_unit" ingredients,	
-        "purchase_quantity" ingredients_purchase,
-        "purchase_price" ingredients_purchase,
-    from ingredients ing
-    join ingredients_purchase ip 
-	    on ing.ingredient_id = ip.ingredient_id 
-    join purchases purch
-	    on purch.purchase_id = ip.purchase_id 
+#     query: Query = (
+#         session.query(
+#             Ingredient.ingredient_name,
+#             Ingredient.measurement_unit,
+#             IngredientsPurchase.purchase_quantity,
+#             IngredientsPurchase.purchase_price,
+#         )
+#         .select_from(Purchase)
+#         .join(IngredientsPurchase)
+#         .join(Ingredient)
+#         .filter(Purchase.purchase_id == id)
+#         .all()
+#     )
 
-    """
+#     purchases = [purchase._asdict() for purchase in query]
 
-    query: Query = (
-        session.query(
-            Ingredient.ingredient_name,
-            Ingredient.measurement_unit,
-            IngredientsPurchase.purchase_quantity,
-            IngredientsPurchase.purchase_price,
-        )
-        .select_from(Purchase)
-        .join(IngredientsPurchase)
-        .join(Ingredient)
-        .filter(Purchase.purchase_id == id)
-        .all()
-    )
+#     for key, value in data.items():
+#         setattr(purchases, key, value)
+#     return {"msg": "purchase updater"}
 
-    purchases = [purchase._asdict() for purchase in query]
+def burt():
+    purchases = loader(Purchase)
+    compras = loader(IngredientsPurchase)
+    ingredientes = loader(Ingredient)
+    
 
-    for key, value in data.items():
-        setattr(purchases, key, value)
-    print(f"****{purchases}")
+    lista_de_compras = []
+    for ingrediente in ingredientes:
+        total_list = []
+        total_qty = []
+        for compra in compras:
+            if ingrediente["ingredient_id"] == compra["ingredient_id"]:
+                total_list.append(compra["purchase_price"])
+                total_qty.append(compra["purchase_quantity"])
+            for purchase in purchases:
+                if compra["purchase_id"] == purchase["purchase_id"]:
+                    compra.update({"purchase_date": purchase["purchase_date"]})
+        ingrediente["purchase_total"] = sum(total_list)
+        ingrediente["ingredient_qty"] = sum(total_qty)
+        lista_de_compras.append(ingrediente)
 
-    return {"msg": "purchase updater"}
+    total = purchases_sumator(compras,"purchase_price")
+    lista_de_compras.append(total)
+
+    return jsonify(lista_de_compras)
 
 
 @jwt_required()
 def purchase_deleter():
     return {"msg": "purchase deleter"}
+
+def purchases_sumator(data, field):
+    lista = []
+    for item in data:
+        lista.append(item[field])
+    suma = sum(lista)
+    return {"Total": suma}
+
+def unico(data):
+    lista = []
+    for item in data:
+        for element in item["purchase"]:
+            lista.append(element["purchase_price"])
+    suma = sum(lista)
+    return suma
