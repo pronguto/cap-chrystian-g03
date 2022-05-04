@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from app.configs.database import db
 from sqlalchemy import Column, Float, ForeignKey, Integer, Numeric
 
+from sqlalchemy.orm import relationship
+
 
 @dataclass
 class IngredientsPurchase (db.Model):
@@ -15,8 +17,13 @@ class IngredientsPurchase (db.Model):
 
     id = Column(Integer, primary_key = True)
     purchase_quantity = Column(Float(3), nullable = False)
-    purchase_price = Column(Numeric(asdecimal=False))
+    purchase_price = Column(Numeric(asdecimal = False))
 
-    ingredient_id = Column(Integer, ForeignKey("ingredients.ingredient_id"), nullable=False)
+    ingredient_id = Column(
+            Integer, ForeignKey("ingredients.ingredient_id"), nullable=False
+        )
+
     purchase_id = Column(Integer, ForeignKey("purchases.purchase_id"), nullable=False)
     
+  
+

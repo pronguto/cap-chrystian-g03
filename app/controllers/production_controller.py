@@ -1,27 +1,284 @@
+from datetime import datetime
+from dataclasses import asdict
+from http import HTTPStatus
+from turtle import update
+from flask import jsonify, request, session
+from sqlalchemy.orm import Query, Session
+from app.models.exceptions.ingredient_exception import KeysError
+from app.models.production_model import Production
+from app.models.production_recipes_model import ProductionRecipe
+from app.configs.database import db
+from sqlalchemy import and_
 from flask_jwt_extended import (
     create_access_token,
     jwt_required,
     get_jwt_identity,
 )
 
+<<<<<<< HEAD
 def production_creator():
     return {"msg": "production creator"}
+=======
+from app.services import ingredient_service
+
+@jwt_required()
+def production_creator():
+    session: Session = db.session
+
+    product: Production = Production()
+    session.add(product)
+    session.commit()
+
+
+    return jsonify(product), HTTPStatus.CREATED
+
+@jwt_required()
+def production_recipes_creator(production_id):
+    session: Session = db.session
+    data = request.get_json()
+
+    expected_keys={"recipe_id","recipe_quantity"}
+    try:
+        ingredient_service.validate_keys(body_request=data, expected_keys= expected_keys)
+    except KeysError as e:
+        return e.message, e.status_code
+
+    data["production_id"]=int(production_id)
+    productionrecipe = ProductionRecipe(**data)
+
+    session.add(productionrecipe)
+    session.commit()
+
+    return jsonify(productionrecipe), HTTPStatus.CREATED
+>>>>>>> develop
 
 @jwt_required()
 def production_loader():
-    return {"msg": "production loader"}
+
+    session: Session = db.session
+
+    Productions: Query= session.query(Production).all()
+    sezalized_production= []
+    for production in Productions:
+        base_query_productionsRicipes: Query= session.query(
+            ProductionRecipe.id, 
+            ProductionRecipe.recipe_id, 
+            ProductionRecipe.recipe_quantity,
+            ProductionRecipe.production_id
+        ).filter_by(production_id= production.production_id).all()
+        production_ricipe_id=[]
+        for productions_ricipe in base_query_productionsRicipes:
+            production_ricipe_id.append(productions_ricipe)
+        to_seralize_production=[]
+        for production_id in production_ricipe_id:
+            production_ricipe= {
+            "id": production_id[0],
+            "recipe_id": production_id[1],
+            "recipe_quantity": production_id[2],
+            "production_id": production_id[3],
+            }
+            to_seralize_production.append(production_ricipe)
+        seralize_production= {"recipes": to_seralize_production}
+        seralize_production.update(asdict(production))
+        sezalized_production.append(seralize_production)
+
+    return jsonify(sezalized_production), HTTPStatus.OK
 
 @jwt_required()
 def production_intervaler():
-    return {"msg": "production intervaler"}
+    session: Session = db.session
+    data = request.args
+    initial_date = datetime.strptime(data["initial_date"], "%d/%m/%Y").date()
+    final_date = datetime.strptime(data["final_date"], "%d/%m/%Y").date()
+    
+    
+    Productions: Query = (
+        session.query(Production)
+            .select_from(Production)
+            .filter(
+                and_(
+                    Production.production_date >= initial_date,
+                    Production.production_date <= final_date,
+                )
+            )
+            .order_by(Production.production_id)
+            .all())
+    sezalized_production= []
+    for production in Productions:
+        base_query_productionsRicipes: Query= session.query(
+            ProductionRecipe.id, 
+            ProductionRecipe.recipe_id, 
+            ProductionRecipe.recipe_quantity,
+            ProductionRecipe.production_id
+        ).filter_by(production_id= production.production_id).all()
+        production_ricipe_id=[]
+        for productions_ricipe in base_query_productionsRicipes:
+            production_ricipe_id.append(productions_ricipe)
+        to_seralize_production=[]
+        for production_id in production_ricipe_id:
+            production_ricipe= {
+            "id": production_id[0],
+            "recipe_id": production_id[1],
+            "recipe_quantity": production_id[2],
+            "production_id": production_id[3],
+            }
+            to_seralize_production.append(production_ricipe)
+        seralize_production= {"recipes": to_seralize_production}
+        seralize_production.update(asdict(production))
+        sezalized_production.append(seralize_production)
 
-# def production_by_date():
-#     return {"msg": "production by date"}
+    return jsonify(sezalized_production), HTTPStatus.OK
 
 @jwt_required()
-def production_updater():
-    return {"msg": "production updater"}
+def production_by_date():
+    session: Session = db.session
+    data = request.args
+
+    date = datetime.strptime(data["date"], "%d/%m/%Y").date()
+
+    Productions: Query = (
+        session.query(Production)
+            .select_from(Production)
+            .filter(
+                and_(
+                    Production.production_date == date
+                )
+            )
+            .order_by(Production.production_id)
+            .all())
+    sezalized_production= []
+    for production in Productions:
+        base_query_productionsRicipes: Query= session.query(
+            ProductionRecipe.id, 
+            ProductionRecipe.recipe_id, 
+            ProductionRecipe.recipe_quantity,
+            ProductionRecipe.production_id
+        ).filter_by(production_id= production.production_id).all()
+        production_ricipe_id=[]
+        for productions_ricipe in base_query_productionsRicipes:
+            production_ricipe_id.append(productions_ricipe)
+        to_seralize_production=[]
+        for production_id in production_ricipe_id:
+            production_ricipe= {
+            "id": production_id[0],
+            "recipe_id": production_id[1],
+            "recipe_quantity": production_id[2],
+            "production_id": production_id[3],
+            }
+            to_seralize_production.append(production_ricipe)
+        seralize_production= {"recipes": to_seralize_production}
+        seralize_production.update(asdict(production))
+        sezalized_production.append(seralize_production)
+
+
+    return jsonify(sezalized_production), HTTPStatus.OK
 
 @jwt_required()
-def production_deleter():
-    return {"msg": "production deleter"}
+def production_by_id(production_id):
+    session: Session = db.session
+
+    Productions: Query = (
+        session.query(Production)
+            .select_from(Production)
+            .filter(
+                and_(
+                    Production.production_id == production_id
+                )
+            )
+            .order_by(Production.production_id)
+            .all())
+    sezalized_production= []
+    for production in Productions:
+        base_query_productionsRicipes: Query= session.query(
+            ProductionRecipe.id, 
+            ProductionRecipe.recipe_id, 
+            ProductionRecipe.recipe_quantity,
+            ProductionRecipe.production_id
+        ).filter_by(production_id= production.production_id).all()
+        production_ricipe_id=[]
+        for productions_ricipe in base_query_productionsRicipes:
+            production_ricipe_id.append(productions_ricipe)
+        to_seralize_production=[]
+        for production_id in production_ricipe_id:
+            production_ricipe= {
+            "id": production_id[0],
+            "recipe_id": production_id[1],
+            "recipe_quantity": production_id[2],
+            "production_id": production_id[3],
+            }
+            to_seralize_production.append(production_ricipe)
+        seralize_production= {"recipes": to_seralize_production}
+        seralize_production.update(asdict(production))
+        sezalized_production.append(seralize_production)
+
+    return jsonify(sezalized_production), HTTPStatus.OK
+
+
+@jwt_required()
+def production_updater(production_id):
+    data = request.get_json()
+    session: Session = db.session
+
+    expected_keys={"recipe_id","recipe_quantity"}
+    try:
+        ingredient_service.validate_keys(body_request=data, expected_keys= expected_keys)
+    except KeysError as e:
+        return e.message, e.status_code
+
+    query: Query = (
+        session.query(ProductionRecipe)
+            .filter(ProductionRecipe.id == production_id
+            )).update({
+                ProductionRecipe.recipe_id: data["recipe_id"],
+                ProductionRecipe.recipe_quantity: data["recipe_quantity"]
+            })
+    
+    session.commit()
+
+    productionsrecipe: Query = (
+        session.query(Production.production_id, 
+            Production.production_date,
+            ProductionRecipe.id, 
+            ProductionRecipe.recipe_id,
+            ProductionRecipe.recipe_quantity)
+            .select_from(Production)
+            .join(ProductionRecipe)
+            .filter(
+                and_(
+                   ProductionRecipe.id == production_id
+                )
+            )
+            .order_by(Production.production_id)
+            .all()
+    )
+    products = [product._asdict() for product in productionsrecipe]
+ 
+    return jsonify(products), HTTPStatus.OK
+
+@jwt_required()
+def production_recipes_deleter(production_id):
+    session: Session = db.session()
+
+    productionsrecipe: ProductionRecipe = (
+        ProductionRecipe.query.filter_by(id = production_id).first()
+    )
+    if not productionsrecipe:
+        return {"Error": "ProductionRicipe not found"}, HTTPStatus.NOT_FOUND
+    
+    session.delete(productionsrecipe)
+    session.commit()
+    return "", HTTPStatus.NO_CONTENT
+
+@jwt_required()
+def production_deleter(production_id):
+    session: Session = db.session()
+
+    productions: Production = (
+        Production.query.filter_by(production_id = production_id).first()
+    )
+    if not productions:
+        return {"Error": "Production not found"}, HTTPStatus.NOT_FOUND
+    
+    session.delete(productions)
+    session.commit()
+    return "", HTTPStatus.NO_CONTENT

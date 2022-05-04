@@ -16,21 +16,22 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 ####  Corpo da requisição:
 
+```json
     {
         "name": "Philip",
         "email": "example@gmail.com",
         "password": "1234"
     }
-
+```
 ####  Corpo da resposta:
 
-
+```json
     { 
         "id": 1,
         "name": "Philip",
         "email": "example@gmail.com",
     }
-
+```
 
 
 ---------------------------------------------------------------
@@ -43,17 +44,20 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 ####  Corpo da requisição:
 
+```json
     {
         "email": "example@gmail.com",
         "password": "1234"
     }
+```
 
 ####  Corpo da resposta:
 
+```json
     {
         "token": "370e63d575bfsdfsfesasdfa2346c1bfb973b0b61047dae3"
     }
-
+```
 
 
 ---------------------------------------------------------------
@@ -73,14 +77,13 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 ####  Corpo da resposta:
 
+```json
     {
-
         "id": 1,
-        "name": "Philip"
+        "name": "Philip",
         "email": "example@gmail.com"
-
     }
-
+```
 
 
 ---------------------------------------------------------------
@@ -97,21 +100,23 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 #####  É possível alterar o nome e a senha.
 
+```json
     {
         "name": "Philip02",
         "email": "example@gmail.com",
         "password": "1234567890"
     }
-
+```
 
 ####  Corpo da resposta:
 
+```json
     {
     	"id": 1,
     	"name": "Philip02",
     	"email": "example@gmail.com"
     }
-
+```
 
 
 ---------------------------------------------------------------
@@ -127,11 +132,11 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 ####  Corpo da resposta:
 
-    
+```json    
     {
         "message": "User Philip has been deleted."
     }
-    
+```
 
 ---------------------------------------------------------------
 ---------------------------------------------------------------
@@ -222,16 +227,19 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
             "measurement_unit": "g",
             "purchases": [
                 {
+                    "purchase_date": "Sun, 01 May 2022 00:00:00 GMT",
                     "purchase_id": 1,
                     "purchase_price": 50.0,
                     "purchase_quantity": 10.0
                 },
                 {
+                    "purchase_date": "Tue, 01 Mar 2022 00:00:00 GMT",
                     "purchase_id": 2,
                     "purchase_price": 30.0,
                     "purchase_quantity": 5.0
                 },
                 {
+                    "purchase_date": "Thu, 02 Jun 2022 00:00:00 GMT",
                     "purchase_id": 3,
                     "purchase_price": 35.0,
                     "purchase_quantity": 5.0
@@ -244,6 +252,7 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
             "measurement_unit": "g",
             "purchases": [
                 {
+                    "purchase_date": "Sun, 01 May 2022 00:00:00 GMT",
                     "purchase_id": 1,
                     "purchase_price": 36.0,
                     "purchase_quantity": 3.0
@@ -254,7 +263,7 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 ```
 
-### GET /api/ingredients/trigo - Rota responsável pela BUSCA de ingrediente.
+### GET /api/ingredients/<name> - Rota responsável pela BUSCA de ingrediente.
 
 *OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
@@ -271,16 +280,19 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
             "measurement_unit": "g",
             "purchases": [
                 {
+                    "purchase_date": "Sun, 01 May 2022 00:00:00 GMT",
                     "purchase_id": 1,
                     "purchase_price": 50.0,
                     "purchase_quantity": 10.0
                 },
                 {
+                    "purchase_date": "Tue, 01 Mar 2022 00:00:00 GMT",
                     "purchase_id": 2,
                     "purchase_price": 30.0,
                     "purchase_quantity": 5.0
                 },
                 {
+                    "purchase_date": "Thu, 02 Jun 2022 00:00:00 GMT",
                     "purchase_id": 3,
                     "purchase_price": 35.0,
                     "purchase_quantity": 5.0
@@ -295,7 +307,7 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 Ingrediente não encontrado:  
 
-GET /api/ingredients/trigosed - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
+GET /api/ingredients/<name> - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 
 ```json 
 
@@ -309,7 +321,7 @@ GET /api/ingredients/trigosed - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 
 ## ATUALIZAÇÃO DE INGREDIENTES
 
-### PATCH /api/ingredients - Rota responsável pela ATUALIZAÇÃO do ingrediente.
+### PATCH /api/ingredients/<name> - Rota responsável pela ATUALIZAÇÃO do ingrediente.
 
 *OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
@@ -338,7 +350,7 @@ GET /api/ingredients/trigosed - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 
 Caso o nome de uma das chaves esteja incorreta.
 
-PATCH /api/ingredients - FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
+PATCH /api/ingredients/<name> - FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
 
 ```json 
     {
@@ -356,7 +368,7 @@ PATCH /api/ingredients - FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
 
 Ingrediente não encontrado:  
 
-PATCH /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
+PATCH /api/ingredients/<name> - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 ```json 
 
@@ -368,7 +380,7 @@ PATCH /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 Caso não exista o ingrediente.
 
-PATCH /api/ingredients - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
+PATCH /api/ingredients/<name> - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 
 ```json 
 
