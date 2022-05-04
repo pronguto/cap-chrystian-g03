@@ -14,21 +14,27 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 #### Corpo da requisição:
 
-    {
-        "name": "Philip",
-        "email": "example@gmail.com",
-        "password": "1234"
-    }
+```json
+{
+  "name": "Philip",
+  "email": "example@gmail.com",
+  "password": "1234"
+}
+```
 
 #### Corpo da resposta:
 
-    {
-        "id": 1,
-        "name": "Philip",
-        "email": "example@gmail.com",
-    }
+```json
+{
+  "id": 1,
+  "name": "Philip",
+  "email": "example@gmail.com"
+}
+```
 
 ---
+
+> > > > > > > develop
 
 ## POST /api/users/signin - Rota responsável pelo LOGIN do usuário.
 
@@ -36,18 +42,24 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 #### Corpo da requisição:
 
-    {
-        "email": "example@gmail.com",
-        "password": "1234"
-    }
+```json
+{
+  "email": "example@gmail.com",
+  "password": "1234"
+}
+```
 
 #### Corpo da resposta:
 
-    {
-        "token": "370e63d575bfsdfsfesasdfa2346c1bfb973b0b61047dae3"
-    }
+```json
+{
+  "token": "370e63d575bfsdfsfesasdfa2346c1bfb973b0b61047dae3"
+}
+```
 
 ---
+
+> > > > > > > develop
 
 ## GET /api/users - Rota responsável pela BUSCA DO USUÁRIO.
 
@@ -59,15 +71,17 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 #### Corpo da resposta:
 
-    {
-
-        "id": 1,
-        "name": "Philip"
-        "email": "example@gmail.com"
-
-    }
+```json
+{
+  "id": 1,
+  "name": "Philip",
+  "email": "example@gmail.com"
+}
+```
 
 ---
+
+> > > > > > > develop
 
 ## PUT /api/users - rota responsável pela ATUALIZAÇÃO de todas as informações do usuário.
 
@@ -77,21 +91,29 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 ##### É possível alterar o nome e a senha.
 
-    {
-        "name": "Philip02",
-        "email": "example@gmail.com",
-        "password": "1234567890"
-    }
+```json
+{
+  "name": "Philip02",
+  "email": "example@gmail.com",
+  "password": "1234567890"
+}
+```
 
 #### Corpo da resposta:
 
-    {
-    	"id": 1,
-    	"name": "Philip02",
-    	"email": "example@gmail.com"
-    }
+> > > > > > > develop
+
+```json
+{
+  "id": 1,
+  "name": "Philip02",
+  "email": "example@gmail.com"
+}
+```
 
 ---
+
+> > > > > > > develop
 
 ## DELETE /api/users - Rota responsável por DELETAR O USUÁRIO.
 
@@ -101,9 +123,11 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 #### Corpo da resposta:
 
-    {
-        "message": "User Philip has been deleted."
-    }
+```json
+{
+  "message": "User Philip has been deleted."
+}
+```
 
 ---
 
@@ -216,36 +240,51 @@ POST /api/ingredients - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 \*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
-#### Não possui corpo de requisição
-
-#### Corpo da resposta - STATUS CODE 200 - OK:
-
-```json
-[
-  {
-    "ingredient_id": 1,
-    "ingredient_name": "trigo",
-    "measurement_unit": "g",
-    "purchases": [
-      {
-        "purchase_id": 1,
-        "purchase_price": 50.0,
-        "purchase_quantity": 10.0
-      },
-      {
-        "purchase_id": 2,
-        "purchase_price": 30.0,
-        "purchase_quantity": 5.0
-      },
-      {
-        "purchase_id": 3,
-        "purchase_price": 35.0,
-        "purchase_quantity": 5.0
-      }
+    [
+        {
+            "ingredient_id": 1,
+            "ingredient_name": "trigo",
+            "measurement_unit": "g",
+            "purchases": [
+                {
+                    "purchase_date": "Sun, 01 May 2022 00:00:00 GMT",
+                    "purchase_id": 1,
+                    "purchase_price": 50.0,
+                    "purchase_quantity": 10.0
+                },
+                {
+                    "purchase_date": "Tue, 01 Mar 2022 00:00:00 GMT",
+                    "purchase_id": 2,
+                    "purchase_price": 30.0,
+                    "purchase_quantity": 5.0
+                },
+                {
+                    "purchase_date": "Thu, 02 Jun 2022 00:00:00 GMT",
+                    "purchase_id": 3,
+                    "purchase_price": 35.0,
+                    "purchase_quantity": 5.0
+                }
+            ]
+        },
+        {
+            "ingredient_id": 2,
+            "ingredient_name": "fermento",
+            "measurement_unit": "g",
+            "purchases": [
+                {
+                    "purchase_date": "Sun, 01 May 2022 00:00:00 GMT",
+                    "purchase_id": 1,
+                    "purchase_price": 36.0,
+                    "purchase_quantity": 3.0
+                }
+            ]
+        }
     ]
-  }
+
+}
 ]
-```
+
+````
 
 ### Possíveis erros
 
@@ -257,9 +296,7 @@ GET /api/ingredients/trigosed - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 {
   "Error": "Ingredient not found"
 }
-```
-
----
+````
 
 ## ATUALIZAÇÃO DE INGREDIENTES
 
@@ -277,6 +314,35 @@ GET /api/ingredients/trigosed - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 ```
 
 #### Corpo da resposta:
+
+=======
+[
+{
+"ingredient_id": 1,
+"ingredient_name": "trigo",
+"measurement_unit": "g",
+"purchases": [
+{
+"purchase_date": "Sun, 01 May 2022 00:00:00 GMT",
+"purchase_id": 1,
+"purchase_price": 50.0,
+"purchase_quantity": 10.0
+},
+{
+"purchase_date": "Tue, 01 Mar 2022 00:00:00 GMT",
+"purchase_id": 2,
+"purchase_price": 30.0,
+"purchase_quantity": 5.0
+},
+{
+"purchase_date": "Thu, 02 Jun 2022 00:00:00 GMT",
+"purchase_id": 3,
+"purchase_price": 35.0,
+"purchase_quantity": 5.0
+}
+]
+}
+]
 
 ```json
 {
@@ -298,6 +364,9 @@ PATCH /api/ingredients - FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
   "recived keys": ["measurement_unit", "ingredients_name"]
 }
 ```
+
+=======
+GET /api/ingredients/<name> - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 
 Ingrediente não encontrado:
 
@@ -328,6 +397,12 @@ PATCH /api/ingredients - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 \*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 #### Não possui corpo de requisição
+
+=======
+
+### PATCH /api/ingredients/<name> - Rota responsável pela ATUALIZAÇÃO do ingrediente.
+
+> > > > > > > develop
 
 #### Não possui corpo de resposta
 
@@ -492,6 +567,8 @@ POST /api/recipess - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 ### GET /api/recipes/<name> - Rota responsável pela BUSCA de receita pelo nome.
 
 \*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+
+PATCH /api/recipes/<name> - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 
 #### Não possui corpo de requisição
 
