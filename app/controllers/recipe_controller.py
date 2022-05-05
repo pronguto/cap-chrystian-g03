@@ -17,6 +17,7 @@ from app.models.recipe_ingredients_model import RecipeIngredient
 from sqlalchemy import and_
 from app.models.exceptions.ingredient_exception import KeysError
 from app.services import ingredient_service
+from app.services.query_services import loader
 
 
 # @jwt_required()
@@ -151,3 +152,19 @@ def delete_recipe(name):
     session.delete(recipe_del)
     session.commit()
     return "", HTTPStatus.NO_CONTENT
+
+def delta():
+    recetas = loader(Recipe)
+    ingredientes = loader(Ingredient)
+    robots = loader(RecipeIngredient)
+
+    items_list = []
+    for ingrediente in ingredientes:
+        ingrediente["recipes"] = []
+        for robot in robots:
+            if robot["ingredient_id"] == ingrediente["ingredient_id"]:
+                ingrediente["recipes"].append(robot)
+        items_list.append(ingrediente)
+
+    return jsonify(items_list)
+

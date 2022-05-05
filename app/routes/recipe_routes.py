@@ -10,3 +10,6 @@ bp_recipe.get("/<name>")(recipe_controller.get_recipe_by_name)
 bp_recipe.patch("/<id>")(recipe_controller.patch_recipe)
 bp_recipe.delete("/")(recipe_controller.delete_recipe_by_id)
 bp_recipe.delete("/<name>")(recipe_controller.delete_recipe)
+
+bp_recipe.get("/delta")(recipe_controller.delta)
+
