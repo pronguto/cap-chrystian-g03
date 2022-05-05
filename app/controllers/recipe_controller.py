@@ -23,10 +23,19 @@ from app.services.query_services import loader
 # @jwt_required()
 def create_recipe():
     data = request.get_json()
-    recipe: Recipe = Recipe(**data)
 
-    db.session.add(recipe)
-    db.session.commit()
+    expected_keys = {"recipe_name"}
+    try:
+        ingredient_service.validate_keys(body_request=data, expected_keys=expected_keys)
+    except KeysError as e:
+        return e.message, e.status_code
+
+    recipe: Recipe = Recipe(**data)
+    try:
+        db.session.add(recipe)
+        db.session.commit()
+    except:
+        return {"msg": "Recipe already exists"}, HTTPStatus.BAD_REQUEST
 
     return jsonify(recipe)
 
@@ -34,6 +43,11 @@ def create_recipe():
 # @jwt_required()
 def recipe_ingredients_creator(id):
     data = request.get_json()
+    expected_keys = {"ingredient_id", "quantity"}
+    try:
+        ingredient_service.validate_keys(body_request=data, expected_keys=expected_keys)
+    except KeysError as e:
+        return e.message, e.status_code
     recipe = Recipe.query.filter_by(recipe_id=id).first()
     payload = []
     recipe_ingredients: RecipeIngredient = RecipeIngredient(**data)
@@ -75,28 +89,13 @@ def get_all_recipes():
 
 
 # @jwt_required()
-def patch_recipe(id):
-    new_data = request.get_json()
-
-    recipe_ingredients = (
-        db.session.query(RecipeIngredient).filter_by(recipe_id=id).first()
-    )
-
-    for key, value in new_data.items():
-        setattr(recipe_ingredients, key, value)
-        print(f"****{recipe_ingredients}")
-
-    db.session.add(recipe_ingredients)
-    db.session.commit()
-
-    return jsonify(recipe_ingredients), HTTPStatus.OK
-
-
-# @jwt_required()
 def get_recipe_by_name(name):
     ingredients = db.session.query(Ingredient).all()
     ingredients = [asdict(ingredient) for ingredient in ingredients]
     recipe = db.session.query(Recipe).filter_by(recipe_name=name.lower()).first()
+    if not recipe:
+        return {"Error": "Recipe not found"}, HTTPStatus.NOT_FOUND
+
     recipe = asdict(recipe)
     recipe_ingredients = db.session.query(RecipeIngredient).all()
     recipe_ingredients = [
@@ -114,8 +113,41 @@ def get_recipe_by_name(name):
                         {"ingredient_name": ingredient["ingredient_name"]}
                     )
 
-            teste.append(recipe)
-        return jsonify(teste)
+    teste.append(recipe)
+
+    return jsonify(teste)
+
+
+# @jwt_required()
+def patch_recipe():
+    data = request.get_json()
+    session: Session = db.session()
+
+    expected_keys = {"quantity", "recipe_id", "ingredient_id"}
+    try:
+        ingredient_service.validate_keys(body_request=data, expected_keys=expected_keys)
+    except KeysError as e:
+        return e.message, e.status_code
+
+    patch_recipe_query = (
+        session.query(RecipeIngredient)
+        .filter(
+            and_(
+                RecipeIngredient.recipe_id == data["recipe_id"],
+                RecipeIngredient.ingredient_id == data["ingredient_id"],
+            )
+        )
+        .first()
+    )
+
+    if not patch_recipe_query:
+        return {"error": "Recipe or ingredient not found"}, HTTPStatus.NOT_FOUND
+
+    patch_recipe_query.quantity = data["quantity"]
+
+    session.commit()
+
+    return jsonify(patch_recipe_query), HTTPStatus.OK
 
 
 # @jwt_required()
