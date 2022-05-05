@@ -20,6 +20,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
     "email": "example@gmail.com",
     "password": "1234"
   }
+
 ```
 
 #### Corpo da resposta:
@@ -30,6 +31,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
     "name": "Philip",
     "email": "example@gmail.com"
   }
+
 ```
 
 
@@ -44,6 +46,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
     "email": "example@gmail.com",
     "password": "1234"
   }
+
 ```
 
 #### Corpo da resposta:
@@ -52,6 +55,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
   {
     "token": "370e63d575bfsdfsfesasdfa2346c1bfb973b0b61047dae3"
   }
+
 ```
 
 
@@ -71,6 +75,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
     "name": "Philip",
     "email": "example@gmail.com"
   }
+
 ```
 
 ## PUT /api/users - rota responsável pela ATUALIZAÇÃO de todas as informações do usuário.
@@ -87,6 +92,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
     "email": "example@gmail.com",
     "password": "1234567890"
   }
+
 ```
 
 #### Corpo da resposta:
@@ -97,6 +103,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
     "name": "Philip02",
     "email": "example@gmail.com"
   }
+
 ```
 
 ## DELETE /api/users - Rota responsável por DELETAR O USUÁRIO.
@@ -111,6 +118,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
   {
     "message": "User Philip has been deleted."
   }
+
 ```
 
 # Produção
@@ -130,6 +138,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
       "production_date": "Tue, 03 May 2022 00:00:00 GMT",
       "production_id": 32
     }
+    
 ```
 
 ---------------------------------------------------------------

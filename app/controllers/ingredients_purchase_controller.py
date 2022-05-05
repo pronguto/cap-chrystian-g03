@@ -1,68 +1,42 @@
 from dataclasses import asdict
-from flask import jsonify, request, session
-from flask_jwt_extended import (
-    create_access_token,
-    jwt_required,
-    get_jwt_identity,
-)
+from http import HTTPStatus
 
+from app.configs.database import db
+from app.models.ingredient_model import Ingredient
 from app.models.ingredients_purchase_model import IngredientsPurchase
 from app.models.purchase_model import Purchase
-from app.models.ingredient_model import Ingredient
-from app.configs.database import db
-from app.controllers.ingredient_controller import ingredient_creator
+from flask import jsonify, request
+from flask_jwt_extended import jwt_required
 
 
-def ingredients_purchase_creator(id):
+@jwt_required()
+def ingredients_purchase_creator(id: int):
     data = request.get_json()
     payload = []
-
-    x = data.pop("ingredient_name")
-    if Ingredient.query.filter_by(ingredient_name=x).first():
-        ingredient = Ingredient.query.filter_by(ingredient_name=x).first()
+    ing_name = data.pop("ingredient_name")
+    if Ingredient.query.filter_by(ingredient_name=ing_name).first():
+        ingredient = Ingredient.query.filter_by(ingredient_name=ing_name).first()
     else:
-        ingrediente = Ingredient(**{"ingredient_name": x})
+        ingrediente = Ingredient(**{"ingredient_name": ing_name})
         db.session.add(ingrediente)
         db.session.commit()
         ingredient = ingrediente
-
     ingredient_id = asdict(ingredient)["ingredient_id"]
     purchase = Purchase.query.filter_by(purchase_id=id).first()
     ingredients_purchase: IngredientsPurchase = IngredientsPurchase(**data)
-
     setattr(ingredients_purchase, "purchase_id", id)
     setattr(ingredients_purchase, "ingredient_id", ingredient_id)
-
     db.session.add(ingredients_purchase)
     db.session.commit()
-
     prueba = IngredientsPurchase.query.filter_by(purchase_id=id).all()
     payload.append(prueba)
     purchase_payload = asdict(purchase)
     purchase_payload.update({"compras": payload})
-    return purchase_payload
-
-
-# @jwt_required()
-def ingredients_purchase_loader():
-    ingredients_purchase = IngredientsPurchase.query.all()
-    return jsonify(ingredients_purchase)
+    return purchase_payload, HTTPStatus.CREATED
 
 
 @jwt_required()
-def purchase_intervaler():
-    return {"msg": "purchase intervaler"}
+def ingredients_purchase_loader():
+    ingredients_purchase = IngredientsPurchase.query.all()
+    return jsonify(ingredients_purchase), HTTPStatus.OK
 
-
-# def purchase_by_date():
-#     return {"msg": "purchase by date"}
-
-
-#  @jwt_required()
-# def purchase_updater():
-
-
-# @jwt_required()
-def purchase_deleter():
-
-    return {"msg": "purchase deleter"}

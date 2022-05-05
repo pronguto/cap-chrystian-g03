@@ -2,7 +2,6 @@ from app.models.exceptions.ingredient_exception import KeysError
 
 def validate_keys(body_request: dict, expected_keys: set):
     recived_keys= set(body_request.keys())
-    recived_values= set(body_request.values())
     valid_keys= []
     extra_keys= recived_keys - expected_keys
 
