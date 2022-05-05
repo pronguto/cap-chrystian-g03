@@ -403,3 +403,314 @@ DELETE /api/ingredients/<name> - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
     }
 
 ```
+
+---------------------------------------------------------------
+---------------------------------------------------------------
+
+
+# Purchases
+
+## REGISTRANDO UMA COMPRA 
+
+### POST /api/purchases - Rota responsável pelo REGISTRO de uma compra.
+
+*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+
+#### Corpo da requisição:
+
+```json 
+
+```
+
+####  Corpo da resposta - STATUS CODE 201 - CREATED:
+
+
+```json 
+
+    {   
+	    "purchase_date": "Tue, 03 May 2022 00:00:00 GMT",
+	    "purchase_id": 1
+    }
+
+```
+
+---------------------------------------------------------------
+
+## REGISTRANDO UMA COMPRA
+
+### POST /api/purchases/purchase_id - Rota responsável pelo REGISTRO de uma compra pelo ID.
+
+*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+*OBS - NECESSITA DE UM ID DO PURCHASE
+
+#### Corpo da requisição:
+
+```json 
+
+    {
+        "ingredient_name": "trigo",
+        "purchase_quantity": 3,
+        "purchase_price": 25
+    }
+
+```
+
+####  Corpo da resposta - STATUS CODE 201 - CREATED:
+
+
+```json 
+
+    {
+        "compras": [
+            [
+                {
+                    "ingredient_id": 1,
+                    "purchase_id": 1,
+                    "purchase_price": 25.0,
+                    "purchase_quantity": 3.0
+                }
+            ]
+        ],
+        "purchase_date": "Tue, 03 May 2022 00:00:00 GMT",
+        "purchase_id": 1
+    }
+
+```
+### Possíveis erros
+
+Caso a compra for utilizando um purchase_id que não exista:
+
+POST /api/purchase/purchase_id - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
+
+```json
+
+    {
+
+	    "detail": "id not found"
+
+    }
+
+```
+
+Caso o nome de uma das chaves esteja incorreta.
+
+POST /api/purchase/purchase_id - FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
+
+```json 
+
+    {
+        "expected keys": [
+            "ingredient_name",
+            "purchase_price",
+            "purchase_quantity"
+        ],
+        "recived keys": [
+            "purchase_price",
+            "ingrediente_nome",
+            "purchase_quantity"
+        ]
+    }
+
+```
+
+Caso seja feita a compra do mesmo ingredient no mesmo id
+
+POST /api/purchase/purchase_id - FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
+
+```json
+
+    {
+	    "detail": "o mesmo ingredient vem sendo comprado mais de uma vez"
+    }  
+
+```
+
+## BUSCA DE COMPRAS
+
+### GET /api/purchases - Rota responsável pela BUSCA de compras.
+
+*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+
+#### Não possui corpo de requisição
+
+####  Corpo da resposta - STATUS CODE 200 - OK:
+
+```json
+    ]
+            {
+            "Purchases": [
+                {
+                    "ingredient_id": 1,
+                    "ingredient_name": "trigo",
+                    "purchase_id": 19,
+                    "purchase_price": 25.0,
+                    "purchase_quantity": 3.0
+                },
+                {
+                    "ingredient_id": 1,
+                    "ingredient_name": "manteiga",
+                    "purchase_id": 19,
+                    "purchase_price": 25.0,
+                    "purchase_quantity": 3.0
+                }
+            ],
+            "price_total": 50.0,
+            "purchase_date": "Tue, 03 May 2022 00:00:00 GMT",
+            "purchase_id": 19
+        }
+    ]
+
+```
+
+### GET /api/purchases/?initial_date=25-04-2022&final_date=30-05-2022 - Rota responsável pela BUSCA de compras.
+
+*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+
+#### Não possui corpo de requisição
+
+####  Corpo da resposta - STATUS CODE 200 - OK:
+
+```json
+
+    [
+        {
+            "ingredient_id": 1,
+            "ingredient_name": "trigo",
+            "purchase_date": "Tue, 03 May 2022 00:00:00 GMT",
+            "purchase_id": 1,
+            "purchase_price": 25.0,
+            "purchase_quantity": 3.0
+        },
+        {
+            "ingredient_id": 4,
+            "ingredient_name": "manteiga",
+            "purchase_date": "Tue, 03 May 2022 00:00:00 GMT",
+            "purchase_id": 1,
+            "purchase_price": 8.0,
+            "purchase_quantity": 3.0
+        },
+        {
+            "ingredient_id": 5,
+            "ingredient_name": "ovo",
+            "purchase_date": "Tue, 03 May 2022 00:00:00 GMT",
+            "purchase_id": 1,
+            "purchase_price": 20.0,
+            "purchase_quantity": 30.0
+        }
+    ]
+
+
+```
+
+### Possíveis erros
+
+
+parametros diferentes de data:  
+
+GET /api/purchases/?initial_date=qualquercoisa&final_date=30-05-2022- FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
+
+```json 
+
+   {
+	    "detail": "start date or end date is not valid"
+   }
+
+```
+
+---------------------------------------------------------------
+
+## ATUALIZAÇÃO DE UMA COMPRA
+
+### PATCH /api/purchases/id - Rota responsável pela ATUALIZAÇÃO do ingrediente.
+
+*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+
+#### Corpo da requisição:
+
+```json 
+
+    {
+   	    "purchase_price": 22,
+	    "purchase_quantity": 10
+    }
+
+```
+####  Corpo da resposta:
+
+```json 
+
+    {
+        "ingredient_id": 1,
+        "purchase_id": 3,
+      	"purchase_price": 22.0,
+	    "purchase_quantity": 10.0
+    }
+
+```
+
+### Possíveis erros
+
+Caso seja passado id que não exista:
+
+POST /api/purchase/purchase_id - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
+
+```json
+
+    {
+
+	    "detail": "purchases not found"
+
+    }
+
+```
+
+Caso o nome de uma das chaves esteja incorreta ou contenha chaves a mais ele as ignora
+
+POST /api/purchase/purchase_id - FORMATO DA RESPOSTA - STATUS 200 - OK
+
+#### Corpo da requisição:
+
+```json
+
+    {
+        "purchase_quantity": 100,
+        "compra_preco": 25	
+    }
+
+```
+####  Corpo da resposta:
+
+```json 
+
+    {
+    	"ingredient_id": 2,
+        "purchase_id": 30,
+        "purchase_price": 20.0,
+        "purchase_quantity": 100.0
+    }
+
+```
+
+## DELEÇÃO DE UMA COMPRA
+
+### DELETE /api/purchases/id - Rota responsável pela DELEÇÃO da compra.
+
+*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+
+#### Não possui corpo de requisição
+
+####  Não possui corpo de resposta
+
+### Possíveis erros
+
+Caso não exista a compra.
+
+DELETE /api/purchases/id - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
+
+```json 
+
+    {
+        "Error": "purchases not found"
+    }
+
+```
