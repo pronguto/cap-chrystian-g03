@@ -1039,7 +1039,7 @@ GET /api/ingredients/masa de pao - FORMATO DA RESPOSTA - STATUS 404 - NOT FOUND
 
 ## ATUALIZAÇÃO DE RECEITA
 
-### PATCH /api/recipe - Rota responsável pela ATUALIZAÇÃO da receita.
+### PATCH /api/recipes - Rota responsável pela ATUALIZAÇÃO da receita.
 
 ##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
@@ -1333,7 +1333,7 @@ GET /api/purchases/?initial_date=qualquercoisa&final_date=30-05-2022- FORMATO DA
 
 ### GET /api/purchases/epsilon?initial_date=27-04-2022&final_date=29-04-2022 - Rota responsável pela BUSCA do valor total de cada compra no intervalo.
 
-\*OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 #### Não possui corpo de requisição
 
