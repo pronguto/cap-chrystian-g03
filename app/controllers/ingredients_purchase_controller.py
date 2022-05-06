@@ -23,6 +23,16 @@ def ingredients_purchase_creator(id: int):
         ingredient = ingrediente
     ingredient_id = asdict(ingredient)["ingredient_id"]
     purchase = Purchase.query.filter_by(purchase_id=id).first()
+    ing_purchases = IngredientsPurchase.query.filter_by(purchase_id=id).all()
+
+    ing_purchase = [asdict(ing) for ing in ing_purchases]
+
+    for ing in ing_purchase:
+        if ing["ingredient_id"] == ingredient_id:
+            return {"detail": "o mesmo ingredient vem sendo comprado mais de uma vez"}, HTTPStatus.BAD_REQUEST
+
+    if not purchase:
+        return {"detail": "id not found"}, HTTPStatus.NOT_FOUND
     ingredients_purchase: IngredientsPurchase = IngredientsPurchase(**data)
     setattr(ingredients_purchase, "purchase_id", id)
     setattr(ingredients_purchase, "ingredient_id", ingredient_id)
@@ -31,6 +41,7 @@ def ingredients_purchase_creator(id: int):
     prueba = IngredientsPurchase.query.filter_by(purchase_id=id).all()
     payload.append(prueba)
     purchase_payload = asdict(purchase)
+
     purchase_payload.update({"compras": payload})
     return purchase_payload, HTTPStatus.CREATED
 

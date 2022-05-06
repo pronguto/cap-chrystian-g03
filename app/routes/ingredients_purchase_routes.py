@@ -9,6 +9,3 @@ bp_ipurchase.post("/purchases/<int:id>")(
 bp_ipurchase.get("/ingredients_purchase")(
     ingredients_purchase_controller.ingredients_purchase_loader
 )
-# bp_ipurchase.get("/intervalo")(ingredients_purchase_controller.purchase_intervaler)
-# bp_ipurchase.patch("")(ingredients_purchase_controller.purchase_updater)
-# bp_ipurchase.delete("")(ingredients_purchase_controller.purchase_deleter)

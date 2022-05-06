@@ -7,6 +7,7 @@ from app.models.ingredient_model import Ingredient
 from app.models.recipe_ingredients_model import RecipeIngredient
 from app.models.recipe_model import Recipe
 from app.services import ingredient_service
+from app.services.query_services import loader
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy import and_
@@ -157,3 +158,19 @@ def delete_recipe(name: str):
     session.delete(recipe_del)
     session.commit()
     return "", HTTPStatus.NO_CONTENT
+
+def delta():
+    recetas = loader(Recipe)
+    ingredientes = loader(Ingredient)
+    robots = loader(RecipeIngredient)
+
+    items_list = []
+    for ingrediente in ingredientes:
+        ingrediente["recipes"] = []
+        for robot in robots:
+            if robot["ingredient_id"] == ingrediente["ingredient_id"]:
+                ingrediente["recipes"].append(robot)
+        items_list.append(ingrediente)
+
+    return jsonify(items_list)
+
