@@ -35,7 +35,7 @@ def purchase_loader():
     for purchase in purchases:
         purchase["price_total"] = 0
         purchase["Purchases"] = []
-        for ingredient_purchase in ingredient_purchases:                       
+        for ingredient_purchase in ingredient_purchases:
             if ingredient_purchase["purchase_id"] == purchase["purchase_id"]:
                 purchase["Purchases"].append(ingredient_purchase)
             for ingredient in ingredients:
@@ -133,15 +133,18 @@ def epsilon():
     purchases = loader(Purchase)
     compras = loader(IngredientsPurchase)
     data = request.args
-    initial_date = datetime.strptime(data["initial_date"],"%d-%m-%Y").date()
+    initial_date = datetime.strptime(data["initial_date"], "%d-%m-%Y").date()
     final_date = datetime.strptime(data["final_date"], "%d-%m-%Y").date()
     lista_de_compras = []
     for purchase in purchases:
         total_list = []
-        if purchase["purchase_date"] >= initial_date and purchase["purchase_date"] <= final_date:
+        if (
+            purchase["purchase_date"] >= initial_date
+            and purchase["purchase_date"] <= final_date
+        ):
             for compra in compras:
                 if purchase["purchase_id"] == compra["purchase_id"]:
                     total_list.append(compra["purchase_price"])
             purchase["purchase_total"] = sum(total_list)
-            lista_de_compras.append(purchase)        
+            lista_de_compras.append(purchase)
     return jsonify(lista_de_compras)
