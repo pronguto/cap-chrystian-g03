@@ -65,7 +65,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 #### Requisição sem corpo:
 
-##### Obs: para encontrar o usuário é preciso fazer o login e utilizar o token auth.
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 #### Corpo da resposta:
 
@@ -110,7 +110,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 #### Requisição sem corpo:
 
-##### Obs: para deletar o usuário é preciso fazer o login e utilizar o token auth.
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 #### Corpo da resposta:
 
@@ -121,23 +121,26 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 ```
 
+---------------------------------------------------------------
+---------------------------------------------------------------
+
 # Produção
 
 ## CADASTRO DE PRODUÇÃO
 
-### POST /api/producions
+### POST /api/productions
 
 ####  Requisição sem corpo:
 
-##### Obs: para crear uma produção preciso fazer o login e utilizar o token auth.
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 ####  Corpo da resposta - STATUS CODE 201 - CREATED:
 
 ```json
-    {
-      "production_date": "Tue, 03 May 2022 00:00:00 GMT",
-      "production_id": 32
-    }
+  {
+    "production_date": "Tue, 03 May 2022 00:00:00 GMT",
+    "production_id": 1
+  }
     
 ```
 
@@ -145,7 +148,7 @@ Para usar OIKOS o usuário precisará fazer um cadastro, com a única finalidade
 
 ## INCERÇÃO DE RECEITAS NA PRODUÇÃO
 
-### POST /api/producions/<id>
+### POST /api/productions/<id>
 
 OBS: PASSAR ID DA PRODUÇÃO QUE IRA RECEBER A RECEITA 
 
@@ -156,19 +159,20 @@ OBS: PASSAR ID DA PRODUÇÃO QUE IRA RECEBER A RECEITA
 		"recipe_id":1,
 	 	"recipe_quantity":50
 	}
+
 ```
 
-##### Obs: para crear uma produção preciso fazer o login e utilizar o token auth.
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 ####  Corpo da resposta - STATUS CODE 201 - CREATED:
 
 ```json
-    {
-      "id": 10,
-      "production_id": 30,
-      "recipe_id": 1,
-      "recipe_quantity": 50.0
-    }
+  {
+    "id": 1,
+    "production_id": 1,
+    "recipe_id": 1,
+    "recipe_quantity": 50.0
+  }
 ```
 
 
@@ -179,18 +183,18 @@ Caso o nome de uma das chaves esteja incorreta.
 FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
 
 ```json 
-    {
-      "expected keys": 
-        [
-          "recipe_id",
-          "recipe_quantity"
-        ],
-      "recived keys": 
-        [
-          "recipe_id",
-          "recipe_quantity"
-        ]
-    }
+  {
+    "expected keys": 
+      [
+        "recipe_id",
+        "recipe_quantity"
+      ],
+    "recived keys": 
+      [
+        "recipe_id",
+        "recipe_quantity"
+      ]
+  }
 ```
 
 Valor invalido:  
@@ -198,62 +202,62 @@ Valor invalido:
 FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 ```json 
-    {
-	    "exeple": 
-        {
-		    "recipe_id": 1,
-		    "recipe_quantity": 1.5
-	      },
-	    "msg": "values invalid"
-    }
+  {
+    "exeple": 
+      {
+      "recipe_id": 1,
+      "recipe_quantity": 1.5
+      },
+    "msg": "values invalid"
+  }
 ```
 
 ---------------------------------------------------------------
 
 ## BUSCAR TODAS AS PRODUÇÃO
 
-### GET /api/producions
+### GET /api/productions
 
-####  Requisição sem corpo:
+####  Requisição sem corpo
 
-##### Obs: para buscar uma produção preciso fazer o login e utilizar o token auth.
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 ####  Corpo da resposta - STATUS CODE 200 - OK:
 
 ```json
-    [
-      {
-        "production_date": "Sun, 01 May 2022 00:00:00 GMT",
-        "production_id": 28,
-        "recipes": 
-          [
-            {
-              "id": 9,
-              "production_id": 28,
-              "recipe_id": 1,
-              "recipe_quantity": 500.0
-            }
-          ]
-      },
-      {
-        "production_date": "Sun, 01 May 2022 00:00:00 GMT",
-        "production_id": 29,
-        "recipes": []
-      }
-    ]
+  [
+    {
+      "production_date": "Sun, 01 May 2022 00:00:00 GMT",
+      "production_id": 1,
+      "recipes": 
+        [
+          {
+            "id": 1,
+            "production_id": 1,
+            "recipe_id": 1,
+            "recipe_quantity": 500.0
+          }
+        ]
+    },
+    {
+      "production_date": "Sun, 01 May 2022 00:00:00 GMT",
+      "production_id": 2,
+      "recipes": []
+    }
+  ]
 ```
 
 ---------------------------------------------------------------
 
 ## BUSCAR PRODUÇÃO POR INTERVALO
 
-### GET /api/producions/intervalo?initial_date=01-05-2022&final_date=02-05-2022
+### GET /api/productions/intervalo?initial_date=01-05-2022&final_date=02-05-2022
 
 OBS: PASSAR A DATA INICIAL (initial_date=XX-XX-XXXX) E FINAL (final_date=XX-XX-XXXX) PARA DEFINIR O INTERVALO
 
 ####  Requisição sem corpo:
 
-##### Obs: para buscar uma produção preciso fazer o login e utilizar o token auth.
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 ####  Corpo da resposta - STATUS CODE 200 - OK:
 
@@ -265,8 +269,8 @@ OBS: PASSAR A DATA INICIAL (initial_date=XX-XX-XXXX) E FINAL (final_date=XX-XX-X
         "recipes": 
           [
             {
-              "id": 9,
-              "production_id": 28,
+              "id": 1,
+              "production_id": 1,
               "recipe_id": 1,
               "recipe_quantity": 500.0
             }
@@ -274,7 +278,7 @@ OBS: PASSAR A DATA INICIAL (initial_date=XX-XX-XXXX) E FINAL (final_date=XX-XX-X
       },
       {
         "production_date": "Sun, 02 May 2022 00:00:00 GMT",
-        "production_id": 29,
+        "production_id": 2,
         "recipes": []
       }
     ]
@@ -284,13 +288,13 @@ OBS: PASSAR A DATA INICIAL (initial_date=XX-XX-XXXX) E FINAL (final_date=XX-XX-X
 
 ## BUSCAR PRODUÇÃO POR DATA
 
-### GET /api/producions/date?date=01-05-2022
+### GET /api/productions/date?date=01-05-2022
 
 OBS: PASSAR A DATA (initial_date=XX-XX-XXXX) DEFINIDA
 
 ####  Requisição sem corpo:
 
-##### Obs: para buscar uma produção preciso fazer o login e utilizar o token auth.
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 ####  Corpo da resposta - STATUS CODE 200 - OK:
 
@@ -298,12 +302,12 @@ OBS: PASSAR A DATA (initial_date=XX-XX-XXXX) DEFINIDA
     [
       {
         "production_date": "Sun, 01 May 2022 00:00:00 GMT",
-        "production_id": 28,
+        "production_id": 1,
         "recipes": 
           [
             {
-              "id": 9,
-              "production_id": 28,
+              "id": 1,
+              "production_id": 1,
               "recipe_id": 1,
               "recipe_quantity": 500.0
             }
@@ -316,13 +320,13 @@ OBS: PASSAR A DATA (initial_date=XX-XX-XXXX) DEFINIDA
 
 ## BUSCAR PRODUÇÃO POR ID
 
-### GET /api/producions/<ID>
+### GET /api/productions/<ID>
 
 OBS: PASSAR ID EXPECIFICO
 
 ####  Requisição sem corpo:
 
-##### Obs: para buscar uma produção preciso fazer o login e utilizar o token auth.
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 ####  Corpo da resposta - STATUS CODE 200 - OK:
 
@@ -330,12 +334,12 @@ OBS: PASSAR ID EXPECIFICO
     [
       {
         "production_date": "Sun, 01 May 2022 00:00:00 GMT",
-        "production_id": 28,
+        "production_id": 1,
         "recipes": 
           [
             {
-              "id": 9,
-              "production_id": 28,
+              "id": 1,
+              "production_id": 1,
               "recipe_id": 1,
               "recipe_quantity": 500.0
             }
@@ -360,7 +364,9 @@ FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
 
 ## ALTERAR UMA RECEITA PRODUZIDA 
 
-### PTCH /api/producions/recipes/<ID>
+### PATCH /api/productions/recipes/<ID>
+
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 OBS: PASSAR ID DA RECEITA PERTECENTE A UMA PRODUÇÃO PARA A ALTERAÇÃO
 
@@ -372,14 +378,13 @@ OBS: PASSAR ID DA RECEITA PERTECENTE A UMA PRODUÇÃO PARA A ALTERAÇÃO
     }
 ```
 
-##### Obs: para alterar uma produção preciso fazer o login e utilizar o token auth.
 
 ####  Corpo da resposta - STATUS CODE 200 - OK:
 
 ```json
     {
-      "id": 9,
-      "production_id": 28,
+      "id": 1,
+      "production_id": 1,
       "recipe_id": 1,
       "recipe_quantity": 500.0
     }
@@ -434,13 +439,13 @@ FORMATO DA RESPOSTA - STATUS 400 - BAD REQUEST
 
 ## DELETAR UMA RECEITA PRODUZIDA 
 
-### GET /api/producions/recipes/<ID>
+### DELETE /api/productions/recipes/<ID>
+
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 OBS: PASSAR ID DA RECEITA PERTECENTE A UMA PRODUÇÃO PARA A DELEÇÃO
 
 ####  Requisição sem corpo:
-
-##### Obs: para deletar uma receita produzida preciso fazer o login e utilizar o token auth.
 
 ####  Requisição sem corpo - STATUS CODE 204 - NO CONTENT:
 
@@ -459,13 +464,13 @@ FORMATO DA RESPOSTA - STATUS 422 - UNPROCESSABLE ENTITY
 
 ## DELETAR UMA PRODUÇÃO 
 
-### GET /api/producions/recipes/<ID>
+### DELETE /api/productions/<ID>
+
+##### OBS - NECESSITA DE AUTORIZAÇÃO VIA TOKEN
 
 OBS: PASSAR ID DA PRODUÇÃO PARA A DELEÇÃO
 
 ####  Requisição sem corpo:
-
-##### Obs: para deletar uma produção preciso fazer o login e utilizar o token auth.
 
 ####  Requisição sem corpo - STATUS CODE 204 - NO CONTENT:
 

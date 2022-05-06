@@ -7,10 +7,10 @@ from app.models.ingredient_model import Ingredient
 from app.models.ingredients_purchase_model import IngredientsPurchase
 from app.models.purchase_model import Purchase
 from app.services import ingredient_service
+from app.services.query_services import loader
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required
 from sqlalchemy.orm import Query, Session
-from app.services.query_services import loader
 
 
 @jwt_required()
@@ -69,6 +69,8 @@ def ingredient_loader():
         seralize_ingredient = {"purchases": to_seralize_ingredient}
         seralize_ingredient.update(asdict(ingredient))
         sezalized_ingredients.append(seralize_ingredient)
+    return jsonify(sezalized_ingredients), HTTPStatus.OK
+
 
 @jwt_required()
 def ingredient_by_name(name: str):
