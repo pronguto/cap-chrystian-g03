@@ -14,6 +14,8 @@ from app.models.recipe_model import Recipe
 from app.models.ingredient_model import Ingredient
 from flask_jwt_extended import jwt_required
 from app.models.recipe_ingredients_model import RecipeIngredient
+from app.models.production_model import Production
+from app.models.production_recipes_model import ProductionRecipe
 from sqlalchemy import and_
 from app.models.exceptions.ingredient_exception import KeysError
 from app.services import ingredient_service
@@ -189,14 +191,23 @@ def delta():
     recetas = loader(Recipe)
     ingredientes = loader(Ingredient)
     robots = loader(RecipeIngredient)
+    formulas = loader(ProductionRecipe)
 
-    items_list = []
-    for ingrediente in ingredientes:
-        ingrediente["recipes"] = []
+    lista = []
+    for receta in recetas:
+        receta["ingredients"] = []
+        petro = []
+        for formula in formulas:
+            if formula["recipe_id"] == receta["recipe_id"]:
+                petro.append(formula["recipe_quantity"])
         for robot in robots:
-            if robot["ingredient_id"] == ingrediente["ingredient_id"]:
-                ingrediente["recipes"].append(robot)
-        items_list.append(ingrediente)
-
-    return jsonify(items_list)
+            if robot["recipe_id"] == receta["recipe_id"]:
+                receta["ingredients"].append(robot)
+            for ingrediente in ingredientes:
+                if ingrediente["ingredient_id"] == robot["ingredient_id"]:
+                    robot.update({"ingredient_name": ingrediente["ingredient_name"]})
+        receta["qty"] = sum(petro)
+        lista.append(receta)
+    
+    return jsonify(lista)
 
